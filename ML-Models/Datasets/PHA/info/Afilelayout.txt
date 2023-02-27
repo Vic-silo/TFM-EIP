@@ -178,3 +178,4 @@ c183,Char,20,Supporting Factor Text,OPERATIONAL
 c191,Char,20,Supporting cause factor B text.,OPERATIONAL
 c229,VarChar,8,Date of Birth of PIC
 c230,VarChar,8,Date of birth of second Pilot
+end_of_record,,,
