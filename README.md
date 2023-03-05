@@ -1,9 +1,14 @@
 # TFM-EIP
-Trabajo Final Master: Aerolinea Riesgosa 
-
+Trabajo Final Master: Análisis de riesgos (PHA)
 ### DESCRIPCIÓN
-Riesgosa es la compañía low cost del Grupo BIN. Con una flota de 33 aviones, opera a más de 50 destinos a nivel nacional e internacional. <br>
-Se desarrollará una solución que ayude a la compañía a realizar una estimación del número de reservas, especialmente después de la pandemia. De este modo, la compañía aérea podrá ajustar la oferta disponible a 
-la demanda de la situación del mercado. Se implementará, además, un sistema de detección y clasificación de oportunidades en el sector
+Estudio del riesgo de accidente existente para los vuelos dadas una serie de
+características previamente estudiadas y analizadas. Estas pueden ser:
+- Riesgos atmosfericos.
+- Riesgos dados al estado del avión.
+- Riesgos dadas las condiciones de la tripulación.
 
-#Prueba de  edición
+### FUENTE
+Para el estudio de los datos, se ha accedido a los datos publicos de la 
+<a href='https://av-info.faa.gov/dd_sublevel.asp?Folder=%5CAID'> Administracion 
+Federal de la Aviación</a> que recogen los sucesos ocurridos desde 1975 hasta 
+la actualidad.
