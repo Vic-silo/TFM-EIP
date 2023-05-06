@@ -8,6 +8,9 @@ class ForecastSetup:
 
         # Introducción
         st.markdown("# MODELO DE PREDICCIÓN FORECAST")
+        st.markdown("Para la predicción, introduzca a continuación los campos "
+                    "requeridos que se le muestran.")
+        st.divider()
 
         # Sidebar
         st.sidebar.header("MODELO DE PREDICCIÓN: FORECAST")
