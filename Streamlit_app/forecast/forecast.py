@@ -6,6 +6,9 @@ import streamlit as st
 import numpy as np
 import warnings
 import json
+import joblib
+from functools import lru_cache
+from pycaret.classification import load_model, predict_model
 
 warnings.filterwarnings('ignore')
 
@@ -18,6 +21,11 @@ OHE_DIC = f'{SOURCE_DIRECTORY}/cols_ohe.csv'
 COL_NAME_DICT = 'source/column_info.csv'
 # Información de las columnas
 HELP_INFO = 'forecast/help_columns.json'
+# Normalizado y escalado
+SCALER_1 = f'{SOURCE_DIRECTORY}/scaler_c20_c240_c241.joblib'
+SCALER_2 = f'{SOURCE_DIRECTORY}/scaler_c31_c21_c113_c56.joblib'
+# Modelo de predicción
+MODEL = 'Forecast_model_20230505_2115'
 
 
 class ForecastModel:
@@ -26,6 +34,7 @@ class ForecastModel:
     """
     # Dataframe de datos a predecir
     _input_df: pd.DataFrame
+    _final_df: pd.DataFrame
     # Dataframe leyenda de datos
     _cols_name_df: pd.DataFrame
     # Columnas esperadas por el modelo
@@ -38,11 +47,15 @@ class ForecastModel:
     _special_cols = ['c7', 'c10', 'c110', 'c20', 'c21']
     # Columnas One Hot Encoder
     _cols_ohe = ['c96', 'c106', 'c112', 'c115']
+    _cols_lbl_encoder = ['c108', 'c49', 'c41', 'c114', 'c110']
     # Columnas por campo semántico
     _cols_forecast = ['c113', 'c114', 'c240', 'c241', 'c112', 'c115']
     _cols_crew = ['c41', 'c49', 'c56']
     _cols_airplane = ['c31']
     _cols_flight = ['c106', 'c96', 'c108', 'c20', 'c21', 'c7', 'c10', 'c110']
+    # Columnas a normalizar o escalar
+    _cols_scaler_1 = ['c20', 'c240', 'c241']
+    _cols_scaler_2 = ['c31', 'c21', 'c113', 'c56']
 
     def __init__(self):
         # Imprimir el nombre de las columnas del dataset
@@ -51,15 +64,7 @@ class ForecastModel:
         # Crear el dataframe de resultados
         self._input_df = pd.DataFrame(columns=self._cols)
 
-    def _col_name(self, col: str) -> str:
-        """
-        Obtener la descirpción de la columna deseada
-        :param col:
-        :return:
-        """
-        info = self._cols_name_df.loc[col]["Descripcion"]
-
-        return f'{col}\t{info}'
+    # PUBLIC METHODS
 
     def data_forecast(self):
         """
@@ -123,10 +128,10 @@ class ForecastModel:
         columns = self._cols_flight
 
         # Zona de vuelo
-        self._plot_map()
+        self._location_input()
 
         # Hora de vuelo
-        self._datetime()
+        self._datetime_input()
 
         # Columnas para introducir datos numericos y categóricos de un modo más
         # simple
@@ -158,14 +163,129 @@ class ForecastModel:
         predict_do = st.button(label=":blue[PREDICCIÓN]")
 
         if predict_do:
-            self.prediction()
+            self._predict()
 
-    def prediction(self):
+    # PRIVATE METHODS
+
+    def _cat_input(self, col: str) -> None:
         """
-        Calculos para la predicción
+        Crear campo categórico de introducción de datos
         :return:
         """
-        st.write('Se desea realizar una predicción')
+        self._input_df.loc[0, col] = st.selectbox(
+            label=self._col_name(col), options=self._get_attributes(col),
+            help=self._help(col))
+
+    def _col_name(self, col: str) -> str:
+        """
+        Obtener la descirpción de la columna deseada
+        :param col:
+        :return:
+        """
+        info = self._cols_name_df.loc[col]["Descripcion"]
+
+        return f'{col}\t{info}'
+
+    def _create_ohe_columns(self, col: str) -> None:
+        """
+        Crea las nuevas columnas teniendo en cuenta el valor seleccionado en el
+        input
+        :param col:
+        :return:
+        """
+        # Valor introducido por usuario
+        input_value = self._input_df.loc[0, col]
+
+        # Obtener valores de la columna
+        attrs = self._cat_col_ohe_attributes(col=col)
+
+        # Lista de columnas a añadir
+        ohe_columns = [f'{col}_{attr}' for attr in attrs]
+
+        # Añadir columnas con valor
+        for col in ohe_columns:
+            value = 1.0 if input_value in col else 0.0
+            self._final_df[col] = value
+
+    def _datetime_input(self) -> None:
+        """
+        Input de fecha y hora de vuelo
+        :return:
+        """
+        with st.container():
+            # INFO
+            st.markdown('### FECHA Y HORA')
+            st.write('Fecha y hora del vuelo.')
+
+            # DATOS
+            c1, c2 = st.columns(spec=2)
+
+            with c1:
+                date = st.date_input(label='Fecha del vuelo',
+                                     help=self._help('c7'))
+                self._input_df.loc[0, 'c7'] = int(date.strftime('%m'))
+
+            with c2:
+                time = st.time_input(label='Hora del vuelo',
+                                     help=self._help('c10'))
+                self._input_df.loc[0, 'c10'] = self._get_hour(time=time)
+
+            # Estado del cielo según la hora
+            self._cat_input(col='c110')
+
+    def _do_scale(self, cols: list, scaler) -> None:
+        """
+        Realiza el escalado de los valores en la lista 1
+        :param col:
+        :return:
+        """
+        self._final_df[cols] = scaler.transform(self._input_df[cols])
+
+    def _encode_ohe_columns(self) -> None:
+        """
+        Codifica los valores para las columnas OHE. Crea las columnas necesarias
+        y elimina la columna padre
+        :return:
+        """
+        list(map(lambda col: (
+                 # Eliminar columna
+                 self._final_df.pop(col),
+                 # Añadir columnas según el valor en el input
+                 self._create_ohe_columns(col=col)),
+                 self._cols_ohe))
+
+    def _encode_no_ohe_columns(self) -> None:
+        """
+        Codifica los valores para el resto de columnas no OHE.
+        :return:
+        """
+        map_df = load_csv(MAPPED_DIC)
+
+        for col in self._cols_lbl_encoder:
+
+            # Valor introducido por usuario
+            input_value = self._input_df.loc[0, col]
+
+            # Obtener valor mapeado
+            map_value = map_df.loc[col].eq(input_value)
+            map_value = map_value.idxmax() if map_value.any() else None
+
+            try:
+                self._final_df[col] = int(map_value)
+
+            except Exception as e:
+                print(f'ERROR\t{input_value}')
+
+    def _encode_values(self) -> None:
+        """
+        Codifica los valores categóricos según su codificación esperada
+        :return:
+        """
+        # Columnas OHE
+        self._encode_ohe_columns()
+
+        # Columnas LabelEncoder
+        self._encode_no_ohe_columns()
 
     def _get_attributes(self, col: str) -> list:
         """
@@ -175,33 +295,32 @@ class ForecastModel:
         :return:
         """
         if col in self._cols_ohe:  # Columnas One Hot Encoder
-            df = load_csv(OHE_DIC)
-            attrs = list(df[col].dropna().unique())
+            attrs = self._cat_col_ohe_attributes(col=col)
 
         else:  # Columnas categoricas
-            df = load_csv(MAPPED_DIC)
-            attrs = list(df.loc[col])
-            attrs = [attr for attr in attrs if attr != '-']
+            attrs = self._cat_col_attributes(col=col)
 
         return attrs
 
-    def _input_numeric_col(self, columns: list) -> None:
+    def _get_scaler(self, scaler_type: int) -> None:
         """
-        Campos para introducir datos numéricos
-        :param columns:
+        Realiza el escalado de los valores en la lista 1
+        :param col:
         :return:
         """
-        unused_cols = self._special_cols.copy()
-        unused_cols.extend(self._cat_cols)
+        try:
+            if scaler_type == 1:
+                scaler = joblib.load(SCALER_1)
+                cols = self._cols_scaler_1
 
-        for col in columns:
-            if col in unused_cols:
-                continue
+            if scaler_type == 2:
+                scaler = joblib.load(SCALER_2)
+                cols = self._cols_scaler_2
 
-            # Campo para introducir datos. Añadir datos a la columna del
-            # dataframe a predecir
-            self._input_df.loc[0, col] = st.number_input(
-                label=self._col_name(col), step=1, help=self._help(col))
+            self._do_scale(cols=cols, scaler=scaler)
+
+        except Exception as e:
+            print('Valores no definidos')
 
     def _input_categorical_col(self, columns: list) -> None:
         """
@@ -218,11 +337,26 @@ class ForecastModel:
 
             # Campo para introducir datos. Añadir datos a la columna del
             # dataframe a predecir
-            self._input_df.loc[0, col] = st.selectbox(
-                label=self._col_name(col), options=self._get_attributes(col),
-                help=self._help(col))
+            self._cat_input(col)
 
-    def _plot_map(self):
+    def _input_numeric_col(self, columns: list) -> None:
+        """
+        Campos para introducir datos numéricos
+        :param columns:
+        :return:
+        """
+        unused_cols = self._special_cols.copy()
+        unused_cols.extend(self._cat_cols)
+
+        for col in columns:
+            if col in unused_cols:
+                continue
+
+            # Campo para introducir datos. Añadir datos a la columna del
+            # dataframe a predecir
+            self._num_input(col)
+
+    def _location_input(self) -> None:
         """
         Representar mapa de la zona de vuelo del avión
         :return:
@@ -249,28 +383,76 @@ class ForecastModel:
 
             st.map(location, zoom=10)
 
-    def _datetime(self):
+    def _num_input(self, col: str) -> None:
         """
-        Input de fecha y hora de vuelo
+        Crear campo numérico de introducción de datos
         :return:
         """
-        with st.container():
-            # INFO
-            st.markdown('### FECHA Y HORA')
-            st.write('Fecha y hora del vuelo.')
+        self._input_df.loc[0, col] = st.number_input(
+            label=self._col_name(col), step=1, help=self._help(col))
 
-            # DATOS
-            c1, c2 = st.columns(spec=2)
+    @lru_cache()
+    def _predict(self) -> None:
+        """
+        Calculos para la predicción. Para ello se requiere normalizar los datos
+        y codificar los valores categóricos
+        :return:
+        """
+        # Crea una copia de los datos introducidos para su modificación
+        self._final_df = self._input_df.copy()
 
-            with c1:
-                date = st.date_input(label='Fecha del vuelo',
-                                     help=self._help('c7'))
-                self._input_df.loc[0, 'c7'] = int(date.strftime('%m'))
+        # Normalizacion y escalado de valores
+        self._scale_values()
 
-            with c2:
-                hour = st.time_input(label='Hora del vuelo',
-                                     help=self._help('c10'))
-                self._input_df.loc[0, 'c10'] = int(hour.strftime('%H'))
+        # Codificación de valores
+        self._encode_values()
+
+        # Predicción
+        do_prediction(input_data=self._final_df)
+
+    def _scale_values(self) -> None:
+        """
+        Escala los valores numéricos según el entrenamiento
+        :return:
+        """
+        # Iterar sobre los dos tipos de scalers definidos en el entrenamiento
+        list(map(lambda x: self._get_scaler(scaler_type=x), [1, 2]))
+
+    # STATIC METHODS
+
+    @staticmethod
+    def _cat_col_attributes(col: str) -> list:
+        """
+        Obtiene los valores de una columna categorica
+        :param col:
+        :return:
+        """
+        df = load_csv(MAPPED_DIC)
+        attrs = list(df.loc[col])
+        return [attr for attr in attrs if attr != '-']
+
+    @staticmethod
+    def _cat_col_ohe_attributes(col: str) -> list:
+        """
+        Devuelve los atributos de una columna OHE
+        :param col:
+        :return:
+        """
+        df = load_csv(OHE_DIC)
+        return list(df[col].dropna().unique())
+
+    @staticmethod
+    def _get_hour(time) -> int:
+        """
+        Selecciona la hora para el input de los datos según la hora y minutos
+        seleccionados
+        :param time:
+        :return:
+        """
+        hour = int(time.strftime('%H'))
+        minute = int(time.strftime('%M'))
+
+        return hour if minute <= 30 else hour + 1
 
     @staticmethod
     def _help(col: str) -> str:
@@ -314,6 +496,23 @@ def cols_info(cols: list) -> pd.DataFrame:
         st.dataframe(df_legend, use_container_width=True)
 
     return df_legend
+
+
+@st.cache_resource
+def do_prediction(input_data: pd.DataFrame) -> None:
+    """
+    Realiza una nueva predicción con los datos proporcionados
+    :param input_data:
+    :return:
+    """
+    model = load_model(f'{SOURCE_DIRECTORY}/{MODEL}')
+    prediction = predict_model(model, data=input_data)
+
+    label = prediction.loc[0, "prediction_label"]
+    score = prediction.loc[0, "prediction_score"]
+
+    st.write('ACCIDENTE\t', label)
+    st.write('SCORE\t', score)
 
 
 @st.cache_data
