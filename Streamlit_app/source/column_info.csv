@@ -4,11 +4,11 @@ c1,Type of Event
 c2,FAR part number
 c3,Form on which the latest data was received.
 c4,Agency conducting investigation.
-c6,Year the accident/incident happened.
-c7,Month the accident/incident happened.
-c8,Day the accident/incident happened.
-c9,Date the accident/incident happened.
-c10,Local time of the accident/incident.
+c6,Year
+c7,Month
+c8,Day
+c9,Date
+c10,Local time
 c75,"First, second, or third airplane involved or Not a midair."
 c132,First remedial action area code
 c134,First remedial action taken code
@@ -19,7 +19,7 @@ c140,Extent of investigation
 c141,Method of notification
 c144,Code for Aircraft Design
 c145,Code for Weight  Class
-c147,Wing information of the aircraft involved in the investigation.
+c147,Wing information of the aircraft
 c149,"Powered, Nonpowered, Optional"
 c151,Number of engines on aircraft
 c152,Code representing typical engine design characteristics of a specific aircraft model.
@@ -34,7 +34,7 @@ c214,Group of the air operator involved in the investigation.
 c233,Flag to indicate if the pilot was killed.
 c234,Flag to indicate if the second pilot was killed.
 c790,Consolidated Statement Rebuttal
-c22,"Aircraft Registration or ""N"" Number ."
+c22,Aircraft Registration or N Number .
 c23,Make of the aircraft
 c24,Model of the aircraft
 c25,Group of the aircraft
@@ -50,17 +50,17 @@ c36,Group of the engine
 c37,Technical certificate data sheet information of the engine
 c38,Certificating region of the engine
 c39,"Piston, turbine, turboprop, etc."
-c11,Region of the accident/incident location.
-c12,District office of the accident/incident location.
-c13,State of the accident/incident location.
-c14,City of the accident/incident location.
+c11,Region
+c12,District office
+c13,State
+c14,City
 c15,Name of the airport
 c16,Airport runway number
 c17,"Location identification code of the nearest airport, if not on airport."
 c18,Direction from the airport location identifier.
 c19,Distance from the airport location identifier.
-c20,Latitude coordinates of the accident/incident
-c21,Longitude coordinates of the accident/incident
+c20,Latitude coordinates
+c21,Longitude coordinates
 c102,Primary type of flying code
 c104,Secondary type of flying code
 c106,Primary flying condition code
@@ -72,7 +72,7 @@ c114,Visibility code
 c115,Visibility restriction code.
 c117,Runway condition code
 c118,Braking condition code
-c143,"Airport identification code of the accident/incident location, if on airport."
+c143,Airport identification code if on airport
 c240,Wind direction
 c241,Wind speed in miles per hours
 c242,Gust indicator flag
