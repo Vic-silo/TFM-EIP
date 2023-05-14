@@ -18,3 +18,10 @@ en concreto. Sus datos, quedan presentados en orden por fecha de vuelo.
 
 https://www.kaggle.com/datasets/parulpandey/us-international-air-traffic-data<br>
 https://www.kaggle.com/datasets/konradb/airline-codes-mapping
+
+#### - PHA-Forecast
+Estudio de analisis de riesgo para un modelo de prediccion atmosferica.
+
+Fuente:
+
+https://www.flight-study.com/p/home-page.html
