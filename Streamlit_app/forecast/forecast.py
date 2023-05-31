@@ -1,31 +1,13 @@
-"""
-Clase
-"""
 import pandas as pd
 import streamlit as st
-import numpy as np
 import warnings
 import json
 import joblib
 from functools import lru_cache
 from pycaret.classification import load_model, predict_model
+from . import constants as c
 
 warnings.filterwarnings('ignore')
-
-# Directorio con fuente de datos
-SOURCE_DIRECTORY = 'source/forecast'
-# Diccionario para mapeo de datos categóricos
-MAPPED_DIC = f'{SOURCE_DIRECTORY}/mapped_dictionary.csv'
-OHE_DIC = f'{SOURCE_DIRECTORY}/cols_ohe.csv'
-# Leyenda de las columnas
-COL_NAME_DICT = 'source/column_info.csv'
-# Información de las columnas
-HELP_INFO = 'forecast/help_columns.json'
-# Normalizado y escalado
-SCALER_1 = f'{SOURCE_DIRECTORY}/scaler_c20_c240_c241.joblib'
-SCALER_2 = f'{SOURCE_DIRECTORY}/scaler_c31_c21_c113_c56.joblib'
-# Modelo de predicción
-MODEL = 'Forecast_model_20230505_2115'
 
 
 class ForecastModel:
@@ -38,24 +20,24 @@ class ForecastModel:
     # Dataframe leyenda de datos
     _cols_name_df: pd.DataFrame
     # Columnas esperadas por el modelo
-    _cols = ['c7', 'c10', 'c31', 'c20', 'c21', 'c108', 'c110', 'c113', 'c114',
-             'c240', 'c241', 'c41', 'c49', 'c56', 'c96', 'c106', 'c112', 'c115']
+    _cols = ['c7', 'c10', 'c20', 'c21', 'c108', 'c110', 'c113', 'c114', 'c241',
+             'c41', 'c49', 'c56', 'c96', 'c106', 'c112', 'c115']
     # Tipo datos columnas
-    _num_cols = ['c31', 'c20', 'c21', 'c113', 'c240', 'c241', 'c56']
+    _num_cols = ['c20', 'c21', 'c113', 'c241', 'c56']
     _cat_cols = ['c7', 'c10', 'c110', 'c106', 'c108', 'c112', 'c114', 'c115',
                  'c41', 'c49', 'c96']
     _special_cols = ['c7', 'c10', 'c110', 'c20', 'c21']
+    _label_col = 'c1'
     # Columnas One Hot Encoder
     _cols_ohe = ['c96', 'c106', 'c112', 'c115']
-    _cols_lbl_encoder = ['c108', 'c49', 'c41', 'c114', 'c110']
+    _cols_lbl_encoder = ['c7', 'c10', 'c108', 'c49', 'c41', 'c114', 'c110']
     # Columnas por campo semántico
-    _cols_forecast = ['c113', 'c114', 'c240', 'c241', 'c112', 'c115']
+    _cols_forecast = ['c113', 'c114', 'c241', 'c112', 'c115']
     _cols_crew = ['c41', 'c49', 'c56']
-    _cols_airplane = ['c31']
     _cols_flight = ['c106', 'c96', 'c108', 'c20', 'c21', 'c7', 'c10', 'c110']
     # Columnas a normalizar o escalar
-    _cols_scaler_1 = ['c20', 'c240', 'c241']
-    _cols_scaler_2 = ['c31', 'c21', 'c113', 'c56']
+    _cols_scaler_1 = ['c20', 'c241']
+    _cols_scaler_2 = ['c21', 'c113', 'c56']
 
     def __init__(self):
         # Imprimir el nombre de las columnas del dataset
@@ -66,7 +48,7 @@ class ForecastModel:
 
     # PUBLIC METHODS
 
-    def data_forecast(self):
+    def data_forecast(self) -> None:
         """
         Introducir los datos para las condiciones climáticas
         :return:
@@ -84,7 +66,7 @@ class ForecastModel:
         with col2:
             self._input_categorical_col(columns=columns)
 
-    def data_crew(self):
+    def data_crew(self) -> None:
         """
         Introducir datos para las condicoines de la tripulacion
         :return:
@@ -102,25 +84,7 @@ class ForecastModel:
         with col2:
             self._input_categorical_col(columns=columns)
 
-    def data_airplane(self):
-        """
-        Introducir datos para las condicoines del avión
-        :return:
-        """
-        columns = self._cols_airplane
-        # Columnas para introducir datos numericos y categóricos de un modo más
-        # simple
-        col1, col2 = st.columns(spec=2, gap='medium')
-
-        # Introducción de datos numéricos
-        with col1:
-            self._input_numeric_col(columns=columns)
-
-        # Intorucción de datos categóricos
-        with col2:
-            self._input_categorical_col(columns=columns)
-
-    def data_flight(self):
+    def data_flight(self) -> None:
         """
         Introducir datos para las condicoines de la tripulacion
         :return:
@@ -149,7 +113,7 @@ class ForecastModel:
         with col2:
             self._input_categorical_col(columns=columns)
 
-    def res_data(self):
+    def res_data(self) -> None:
         """
         Realiza la predicción del modelo
         :return:
@@ -207,6 +171,9 @@ class ForecastModel:
             value = 1.0 if input_value in col else 0.0
             self._final_df[col] = value
 
+        # Renombrar columnas NaN
+        self._final_df.columns = self._final_df.columns.str.replace('_NAN', '_nan')
+
     def _datetime_input(self) -> None:
         """
         Input de fecha y hora de vuelo
@@ -223,7 +190,7 @@ class ForecastModel:
             with c1:
                 date = st.date_input(label='Fecha del vuelo',
                                      help=self._help('c7'))
-                self._input_df.loc[0, 'c7'] = int(date.strftime('%m'))
+                self._input_df.loc[0, 'c7'] = str(int(date.strftime('%m')))
 
             with c2:
                 time = st.time_input(label='Hora del vuelo',
@@ -236,7 +203,8 @@ class ForecastModel:
     def _do_scale(self, cols: list, scaler) -> None:
         """
         Realiza el escalado de los valores en la lista 1
-        :param col:
+        :param cols:
+        :param scaler:
         :return:
         """
         self._final_df[cols] = scaler.transform(self._input_df[cols])
@@ -259,7 +227,7 @@ class ForecastModel:
         Codifica los valores para el resto de columnas no OHE.
         :return:
         """
-        map_df = load_csv(MAPPED_DIC)
+        map_df = load_csv(c.MAPPED_DIC)
 
         for col in self._cols_lbl_encoder:
 
@@ -273,8 +241,8 @@ class ForecastModel:
             try:
                 self._final_df[col] = int(map_value)
 
-            except Exception as e:
-                print(f'ERROR\t{input_value}')
+            except (ValueError, NameError) as e:
+                print(f'ERROR\t{e}')
 
     def _encode_values(self) -> None:
         """
@@ -290,8 +258,7 @@ class ForecastModel:
     def _get_attributes(self, col: str) -> list:
         """
         Obtener la lista de valores que tiene una columna
-        :param column:
-        :param col_type:
+        :param col:
         :return:
         """
         if col in self._cols_ohe:  # Columnas One Hot Encoder
@@ -305,21 +272,22 @@ class ForecastModel:
     def _get_scaler(self, scaler_type: int) -> None:
         """
         Realiza el escalado de los valores en la lista 1
-        :param col:
+        :param scaler_type:
         :return:
         """
         try:
             if scaler_type == 1:
-                scaler = joblib.load(SCALER_1)
+                scaler = joblib.load(c.SCALER_1)
                 cols = self._cols_scaler_1
 
             if scaler_type == 2:
-                scaler = joblib.load(SCALER_2)
+                scaler = joblib.load(c.SCALER_2)
                 cols = self._cols_scaler_2
 
             self._do_scale(cols=cols, scaler=scaler)
 
         except Exception as e:
+            print("[-] ERROR\t", e)
             print('Valores no definidos')
 
     def _input_categorical_col(self, columns: list) -> None:
@@ -408,14 +376,34 @@ class ForecastModel:
         self._encode_values()
 
         # Predicción
-        do_prediction(input_data=self._final_df)
+        pred = do_prediction(input_data=self._final_df)
+        self._print_prediction(prediction=pred)
+
+    def _print_prediction(self, prediction: int) -> None:
+        """
+        Muestra por pantalla el resultado
+        :param prediction:
+        :return:
+        """
+        map_df = load_csv(c.MAPPED_DIC)
+
+        # Obtener valor mapeado
+        map_value = map_df.at[self._label_col, str(prediction)]
+
+        result = 'No existe' if map_value == 'I' else 'Existe'
+
+        if result == 'No existe':
+            st.info(f'{result} probabilidad de accidente.')
+
+        else:
+            st.warning(f'{result} probabilidad de accidente.')
 
     def _scale_values(self) -> None:
         """
         Escala los valores numéricos según el entrenamiento
         :return:
         """
-        # Iterar sobre los dos tipos de scalers definidos en el entrenamiento
+        # Iterar sobre los tipos de scalers definidos en el entrenamiento
         list(map(lambda x: self._get_scaler(scaler_type=x), [1, 2]))
 
     # STATIC METHODS
@@ -427,7 +415,7 @@ class ForecastModel:
         :param col:
         :return:
         """
-        df = load_csv(MAPPED_DIC)
+        df = load_csv(c.MAPPED_DIC)
         attrs = list(df.loc[col])
         return [attr for attr in attrs if attr != '-']
 
@@ -438,11 +426,11 @@ class ForecastModel:
         :param col:
         :return:
         """
-        df = load_csv(OHE_DIC)
+        df = load_csv(c.OHE_DIC)
         return list(df[col].dropna().unique())
 
     @staticmethod
-    def _get_hour(time) -> int:
+    def _get_hour(time) -> str:
         """
         Selecciona la hora para el input de los datos según la hora y minutos
         seleccionados
@@ -452,7 +440,13 @@ class ForecastModel:
         hour = int(time.strftime('%H'))
         minute = int(time.strftime('%M'))
 
-        return hour if minute <= 30 else hour + 1
+        if minute >= 30:
+            hour += 1
+
+        if hour == 24:
+            hour = 0
+
+        return str(hour).zfill(2)
 
     @staticmethod
     def _help(col: str) -> str:
@@ -461,7 +455,7 @@ class ForecastModel:
         :param col:
         :return:
         """
-        with open(HELP_INFO) as f:
+        with open(c.HELP_INFO) as f:
             info = json.load(f)
 
         return info.get(col, 'Ayuda no disponible. Disculpe las molestias.')
@@ -474,7 +468,7 @@ def cols_info(cols: list) -> pd.DataFrame:
     :return:
     """
     # Obtener los datos
-    df = pd.read_csv(COL_NAME_DICT)
+    df = pd.read_csv(c.COL_NAME_DICT)
 
     # Mostrar los datos
     dict_cols = {'Indice': [], 'Descripcion': []}
@@ -499,20 +493,16 @@ def cols_info(cols: list) -> pd.DataFrame:
 
 
 @st.cache_resource
-def do_prediction(input_data: pd.DataFrame) -> None:
+def do_prediction(input_data: pd.DataFrame) -> int:
     """
     Realiza una nueva predicción con los datos proporcionados
     :param input_data:
     :return:
     """
-    model = load_model(f'{SOURCE_DIRECTORY}/{MODEL}')
+    model = load_model(f'{c.SOURCE_DIRECTORY}/{c.MODEL}')
     prediction = predict_model(model, data=input_data)
 
-    label = prediction.loc[0, "prediction_label"]
-    score = prediction.loc[0, "prediction_score"]
-
-    st.write('ACCIDENTE\t', label)
-    st.write('SCORE\t', score)
+    return prediction.loc[0, "prediction_label"]
 
 
 @st.cache_data

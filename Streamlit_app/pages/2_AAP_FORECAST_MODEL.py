@@ -14,8 +14,8 @@ ForecastSetup()
 forecast_model = ForecastModel()
 
 # Tabs con las secciones para introducir datos y mostrar resultados
-tab_forecast, tab_crew, tab_airplane, tab_flight, tab_res = st.tabs([
-    "DATOS CLIMATOLOGICOS", "DATOS TRIPULACIÓN", "DATOS AVIÓN", "DATOS VUELO",
+tab_forecast, tab_crew, tab_flight, tab_res = st.tabs([
+    "DATOS CLIMATOLOGICOS", "DATOS TRIPULACIÓN", "DATOS VUELO",
     ":blue[RESULTADOS]"])
 
 
@@ -24,9 +24,6 @@ with tab_forecast:
 
 with tab_crew:
     forecast_model.data_crew()
-
-with tab_airplane:
-    forecast_model.data_airplane()
 
 with tab_flight:
     forecast_model.data_flight()
