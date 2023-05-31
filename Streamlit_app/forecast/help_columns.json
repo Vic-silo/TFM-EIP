@@ -1,0 +1,16 @@
+{
+    "c114": "Visibilidad - codigo\\\nG10: > 10 millas\\\nLS1: < 1 milla\\\n1: 1 milla\\\n2: 2 milla\\\n3: 3 milla\\\n4: 4 milla\\\n5: 5 milla\\\n6: 6 milla\\\n7: 7 milla\\\n8: 8 milla\\\n9: 9 milla\\\n10: 10 milla",
+    "c112": "Estado del cielo\\\nBRKN: Nuber dispersas\\\nCLER: Despejado\\\nNAN: Desconocido\\\nOBSC: Oscurecido\\\nOCST: Nublado\\\nSCAT: Nuber dispersas",
+    "c115": "Visibilidad - restriccion\\\nBLS: Soplando nieve\\\nDRZ: Llovizna\\\nDST: Polvo\\\nFOG: Niebla\\\nHAZ: Bruma\\\nNAN: Desconocido\\\nNONE: Sin restriccion\\\nOTH: Otras\\\nRAI: Lluvia\\\nSMK: Humo\\\nSNO: Nevando",
+    "c113": "Techo de las nubes (pies)",
+    "c241": "Velocidad viento (mph)",
+    "c56": "Horas de vuelo del piloto (horas)",
+    "c41": "Certificado del piloto\\\nF1: Instructor privado\\\nF3: Instructor comercial\\\nF9: Instructor aerolinea\\\nTT: Piloto sin certificado\\\nXX: Estudiante\\\n00: Especial\\\n01: Piloto privado\\\n02: Piloto recreacional\\\n03: Piloto comercial\\\n09: Piloto aerolinea",
+    "c49": "Cualificacion del piloto\\\nE: FLT INST QUALIFIED IN OPER\\\nF: FLT INST NOT QUALIFIED IN OPER\\\nG: QUAL IN OPER NOT FLIGHT INST\\\nH: NQAL IN OPER-NOT A FLIGHT INST\\\nM: UNKNOWN, FOREIGN PILOT\\\nN: NO MEDICAL CERTIFICATE/EXPIRED\\\nP: NO BIENNIAL FLIGHT REVIEW\\\nR: NOT PROPERLY RATED\\\nS: QUALIFIED\\\nT: NOT QUALIFIED\\\nU: NO MEDICAL OR BIENNIAL\\\nV: NO MEDICAL/NOT RATED\\\nW: NO BIENNIAL NOT RATED\\\nX: CERT SUSPENDED/REVOKED",
+    "c20": "Latitud (Grados decimales)",
+    "c21": "Longitud (Grados decimales)",
+    "c110": "Condiciones luminicas\\\n1: Dia\\\n2: Noche\\\n3: Amanecer\\\n4: Atardecer\\\n5: Desconocido",
+    "c106": "Condicion de vuelo - Primario\\\nA: IFR (Vuelo instrumental)\\\nB: VFR (Vuelo visual)\\\nC: Desconocido",
+    "c96": "Fase de vuelo\\\nAIRBNE: En vuelo\\\nGND: En tierra\\\nLDG: Aterrizando\\\nOTH: Otros\\\nSPL: Especial\\\nT/O: Despegue",
+    "c108": "Condicion de vuelo - Secundario\\\nA: Tornado\\\nB: Huracan\\\nC: MOUNTAIN WAVE\\\nD: Frente activo\\\nE: Turbonada\\\nF: Niebla\\\nG: Viento\\\nH: Llovizna\\\nI: Llovizna helada\\\nJ: Lluvia intensa\\\nK: Lluvia intensa helada\\\nL: Nubes bajas\\\nM: Fuerte nevada\\\nN: Ligera nevada\\\nO: Temperatura helada\\\nP: Atravesando frente\\\nQ: Torbellino\\\nR: Escarcha\\\nS: Buen clima\\\nT: Truenos\\\nU: Turbulencias\\\nV: Otros\\\nW: Desconocido"
+}
