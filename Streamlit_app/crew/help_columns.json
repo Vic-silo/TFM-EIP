@@ -14,3 +14,44 @@
     "c96": "Fase de vuelo\\\nAIRBNE: En vuelo\\\nGND: En tierra\\\nLDG: Aterrizando\\\nOTH: Otros\\\nSPL: Especial\\\nT/O: Despegue",
     "c108": "Condicion de vuelo - Secundario\\\nA: Tornado\\\nB: Huracan\\\nC: MOUNTAIN WAVE\\\nD: Frente activo\\\nE: Turbonada\\\nF: Niebla\\\nG: Viento\\\nH: Llovizna\\\nI: Llovizna helada\\\nJ: Lluvia intensa\\\nK: Lluvia intensa helada\\\nL: Nubes bajas\\\nM: Fuerte nevada\\\nN: Ligera nevada\\\nO: Temperatura helada\\\nP: Atravesando frente\\\nQ: Torbellino\\\nR: Escarcha\\\nS: Buen clima\\\nT: Truenos\\\nU: Turbulencias\\\nV: Otros\\\nW: Desconocido"
 }
+
+"""
+[+] SELECTED_COL	c1	Type of Event
+[+] SELECTED_COL	c7	Month the accident/incident happened.
+[+] SELECTED_COL	c51	Profession description of the pilot in command
+[+] SELECTED_COL	c106	Primary flying condition code
+[+] SELECTED_COL	c108	Secondary flying condition code
+[+] SELECTED_COL	c109	Light condition text
+[+] SELECTED_COL	c117	Runway condition code
+[+] SELECTED_COL	c118	Braking condition code
+[+] SELECTED_COL	c126	Certificate number of the air agency
+[+] SELECTED_COL	c128	District office of the air operator
+[+] SELECTED_COL	c144	Code for Aircraft Design
+[+] SELECTED_COL	c145	Code for Weight  Class
+[+] SELECTED_COL	c141	Method of notification
+[+] SELECTED_COL	c51	Profession description of the pilot in command
+[+] SELECTED_COL	c130	Flight plan description
+[+] SELECTED_COL	c84	Supporting factor code                              TECHNICAL
+[+] SELECTED_COL	c156	Type of engine.
+[+] SELECTED_COL	c122	Designator code of the air operator (OPCD)
+[+] SELECTED_COL	c126	Certificate number of the air agency
+[+] SELECTED_COL	c10	Local time of the accident/incident.
+[+] SELECTED_COL	c132	First remedial action area code
+[+] SELECTED_COL	c65	Number of flight crew members onboard
+[+] SELECTED_COL	c47	Any other rating code of the pilot in command .
+[+] SELECTED_COL	c61	Including crew and passengers.
+[+] SELECTED_COL	c62	Number of passengers onboard
+[+] SELECTED_COL	c128	District office of the air operator
+[+] SELECTED_COL	c123	Emergency Locator Transmitter on Board?           Y or N
+[+] SELECTED_COL	c35	Model of the engine
+[+] SELECTED_COL	c151	Number of engines on aircraft
+[+] SELECTED_COL	c101	Primary type of flying text
+[+] SELECTED_COL	c49	Qualification code of the pilot in command .
+[+] SELECTED_COL	c41	Certificate type code of the pilot in command
+[+] SELECTED_COL	c31	Airframe hours of the aircraft
+[+] SELECTED_COL	c30	Airworthiness class code of the aircraft
+[+] SELECTED_COL	c56	Total number of hours the pilot has flown.
+
+
+
+"""

@@ -10,7 +10,7 @@ from . import constants as c
 warnings.filterwarnings('ignore')
 
 
-class ForecastModel:
+class CrewModel:
     """
     Clase para el análisis del modelo de predicción Forecast
     """
@@ -20,24 +20,40 @@ class ForecastModel:
     # Dataframe leyenda de datos
     _cols_name_df: pd.DataFrame
     # Columnas esperadas por el modelo
-    _cols = ['c7', 'c10', 'c20', 'c21', 'c108', 'c110', 'c113', 'c114', 'c241',
-             'c41', 'c49', 'c56', 'c96', 'c106', 'c112', 'c115']
+    _cols = ['c7', 'c151', 'c47', 'c65', 'c10','c61', 'c62', 'c31', 'c56','c1', 'c144',
+             'c106', 'c108', 'c51', 'c101', 'c109', 'c132', 'c141', 'c35', 'c117', 'c122',
+             'c126', 'c128', 'c130', 'c84', 'c123', 'c156', 'c49', 'c41', 'c30']
     # Tipo datos columnas
     _num_cols = ['c20', 'c21', 'c113', 'c241', 'c56']
-    _cat_cols = ['c7', 'c10', 'c110', 'c106', 'c108', 'c112', 'c114', 'c115',
-                 'c41', 'c49', 'c96']
+    _cat_cols = ['c7', 'c151', 'c47', 'c65', 'c10','c1', 'c144', 'c106', 'c108', 'c51',
+                 'c101', 'c109', 'c132', 'c141', 'c35', 'c117', 'c122', 'c126', 'c128',
+                 'c130', 'c84', 'c123', 'c156', 'c49', 'c41', 'c30']
     _special_cols = ['c7', 'c10', 'c110', 'c20', 'c21']
     _label_col = 'c1'
+
     # Columnas One Hot Encoder
     _cols_ohe = ['c96', 'c106', 'c112', 'c115']
-    _cols_lbl_encoder = ['c7', 'c10', 'c108', 'c49', 'c41', 'c114', 'c110']
-    # Columnas por campo semántico
-    _cols_forecast = ['c113', 'c114', 'c241', 'c112', 'c115']
-    _cols_crew = ['c41', 'c49', 'c56']
-    _cols_flight = ['c106', 'c96', 'c108', 'c20', 'c21', 'c7', 'c10', 'c110']
+    _cols_lbl_encoder = ['c144', 'c106', 'c108', 'c51', 'c101', 'c109', 'c132',
+                         'c141', 'c35', 'c117', 'c122', 'c126', 'c128', 'c130',
+                         'c84', 'c123', 'c156', 'c49', 'c41', 'c30']
+
+
+
+    # Columnas por campo semántico añadir columnas para que queden separadas por tipo y sea mas visual
+    _cols_forecast = ['c109' ]
+    _cols_crew = ['c51','c65','c47','c61','c62','c56','c49','c41']
+    _cols_flight = ['c7	','c106','c108','c117','c118','c126','c128','c144','c141','c130',
+                    'c84','c156','c122','c126','c10','c132','c128','c123','c35','c151','c101','c31','c30' ]
+
+
+
     # Columnas a normalizar o escalar
-    _cols_scaler_1 = ['c20', 'c241']
-    _cols_scaler_2 = ['c21', 'c113', 'c56']
+    _cols_scaler_1 = ['c61', 'c62', 'c31', 'c56']
+    #_cols_scaler_2 = ['c21', 'c113', 'c56']
+
+    ##############SEGUIR ##################
+    ##############SEGUIR ##################
+    ##############SEGUIR ##################
 
     def __init__(self):
         # Imprimir el nombre de las columnas del dataset

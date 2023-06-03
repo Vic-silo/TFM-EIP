@@ -2,16 +2,16 @@
 Modelo de predicción para Forecast
 """
 import streamlit as st
-from pages.page_styler.page_style import ForecastSetup
-from forecast.forecast import ForecastModel
+from pages.page_styler.page_style import CrewSetup
+from crew.crew import CrewModel
 
 
 # Setup de los datos de la página
-ForecastSetup()
+CrewSetup()
 
 # MODELO FORECAST
 # Instancia de clase para introducir datos y predecir
-forecast_model = ForecastModel()
+forecast_model = CrewModel()
 
 # Tabs con las secciones para introducir datos y mostrar resultados
 tab_forecast, tab_crew, tab_flight, tab_res = st.tabs([
