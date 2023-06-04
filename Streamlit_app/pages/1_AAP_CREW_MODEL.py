@@ -11,7 +11,7 @@ CrewSetup()
 
 # MODELO FORECAST
 # Instancia de clase para introducir datos y predecir
-forecast_model = CrewModel()
+crew_model = CrewModel()
 
 # Tabs con las secciones para introducir datos y mostrar resultados
 tab_forecast, tab_crew, tab_flight, tab_res = st.tabs([
@@ -20,13 +20,13 @@ tab_forecast, tab_crew, tab_flight, tab_res = st.tabs([
 
 
 with tab_forecast:
-    forecast_model.data_forecast()
+    crew_model.data_forecast()
 
 with tab_crew:
-    forecast_model.data_crew()
+    crew_model.data_crew()
 
 with tab_flight:
-    forecast_model.data_flight()
+    crew_model.data_flight()
 
 with tab_res:
-    forecast_model.res_data()
+   crew_model.res_data()

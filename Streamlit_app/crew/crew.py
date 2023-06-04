@@ -20,40 +20,38 @@ class CrewModel:
     # Dataframe leyenda de datos
     _cols_name_df: pd.DataFrame
     # Columnas esperadas por el modelo
-    _cols = ['c7', 'c151', 'c47', 'c65', 'c10','c61', 'c62', 'c31', 'c56','c1', 'c144',
-             'c106', 'c108', 'c51', 'c101', 'c109', 'c132', 'c141', 'c35', 'c117', 'c122',
-             'c126', 'c128', 'c130', 'c84', 'c123', 'c156', 'c49', 'c41', 'c30']
+    _cols = ['c61', 'c62', 'c31', 'c56','c7', 'c151', 'c47', 'c65', 'c10',
+             'c1', 'c144', 'c106', 'c108', 'c51', 'c101', 'c109', 'c132',
+             'c141', 'c35', 'c117', 'c122', 'c126', 'c128', 'c130', 'c84', 'c123', 'c156', 'c49', 'c41', 'c30']
     # Tipo datos columnas
-    _num_cols = ['c20', 'c21', 'c113', 'c241', 'c56']
+    _num_cols = ['c61', 'c62', 'c31', 'c56']
     _cat_cols = ['c7', 'c151', 'c47', 'c65', 'c10','c1', 'c144', 'c106', 'c108', 'c51',
                  'c101', 'c109', 'c132', 'c141', 'c35', 'c117', 'c122', 'c126', 'c128',
-                 'c130', 'c84', 'c123', 'c156', 'c49', 'c41', 'c30']
-    _special_cols = ['c7', 'c10', 'c110', 'c20', 'c21']
+                 'c130', 'c84', 'c123', 'c156', 'c49', 'c41', 'c30','c61', 'c62', 'c31']
+
+
+    _special_cols = ['c7', 'c10'] # borrar esta linea
     _label_col = 'c1'
 
     # Columnas One Hot Encoder
-    _cols_ohe = ['c96', 'c106', 'c112', 'c115']
-    _cols_lbl_encoder = ['c144', 'c106', 'c108', 'c51', 'c101', 'c109', 'c132',
-                         'c141', 'c35', 'c117', 'c122', 'c126', 'c128', 'c130',
-                         'c84', 'c123', 'c156', 'c49', 'c41', 'c30']
+    #_cols_oe = ['c144', 'c106', 'c108', 'c51', 'c101', 'c109', 'c132', 'c141', 'c35', 'c117', 'c122', 'c126', 'c128', 'c130', 'c84', 'c123', 'c156', 'c49', 'c41', 'c30']
+    _cols_lbl_encoder = ['c144', 'c106', 'c108', 'c51', 'c101', 'c109', 'c132', 'c141', 'c35', 'c117', 'c122', 'c126', 'c128', 'c130', 'c84', 'c123', 'c156', 'c49', 'c41', 'c30']
 
 
 
     # Columnas por campo semántico añadir columnas para que queden separadas por tipo y sea mas visual
-    _cols_forecast = ['c109' ]
-    _cols_crew = ['c51','c65','c47','c61','c62','c56','c49','c41']
-    _cols_flight = ['c7	','c106','c108','c117','c118','c126','c128','c144','c141','c130',
+    _cols_forecast = ["c109","c117"]
+    _cols_crew = ['c51','c61','c62','c56','c49','c41']#Genera error con columnas c65 y c47 no están en el diccionario por lo que hay que generarlo de nuevo
+    _cols_flight = ['c7','c106','c108','c117','c126','c128','c144','c141','c130',
                     'c84','c156','c122','c126','c10','c132','c128','c123','c35','c151','c101','c31','c30' ]
 
 
 
     # Columnas a normalizar o escalar
     _cols_scaler_1 = ['c61', 'c62', 'c31', 'c56']
-    #_cols_scaler_2 = ['c21', 'c113', 'c56']
+    #_cols_scaler_2 = ['c61', 'c62', 'c31', 'c56']
 
-    ##############SEGUIR ##################
-    ##############SEGUIR ##################
-    ##############SEGUIR ##################
+
 
     def __init__(self):
         # Imprimir el nombre de las columnas del dataset
@@ -108,7 +106,7 @@ class CrewModel:
         columns = self._cols_flight
 
         # Zona de vuelo
-        self._location_input()
+        #self._location_input()
 
         # Hora de vuelo
         self._datetime_input()
@@ -208,13 +206,6 @@ class CrewModel:
                                      help=self._help('c7'))
                 self._input_df.loc[0, 'c7'] = str(int(date.strftime('%m')))
 
-            with c2:
-                time = st.time_input(label='Hora del vuelo',
-                                     help=self._help('c10'))
-                self._input_df.loc[0, 'c10'] = self._get_hour(time=time)
-
-            # Estado del cielo según la hora
-            self._cat_input(col='c110')
 
     def _do_scale(self, cols: list, scaler) -> None:
         """
@@ -225,18 +216,18 @@ class CrewModel:
         """
         self._final_df[cols] = scaler.transform(self._input_df[cols])
 
-    def _encode_ohe_columns(self) -> None:
+    #def _encode_ohe_columns(self) -> None:
         """
         Codifica los valores para las columnas OHE. Crea las columnas necesarias
         y elimina la columna padre
         :return:
         """
-        list(map(lambda col: (
+     #   list(map(lambda col: (
                  # Eliminar columna
-                 self._final_df.pop(col),
+     #            self._final_df.pop(col),
                  # Añadir columnas según el valor en el input
-                 self._create_ohe_columns(col=col)),
-                 self._cols_ohe))
+     #            self._create_ohe_columns(col=col)),
+     #            self._cols_oe))
 
     def _encode_no_ohe_columns(self) -> None:
         """
@@ -260,29 +251,19 @@ class CrewModel:
             except (ValueError, NameError) as e:
                 print(f'ERROR\t{e}')
 
-    def _encode_values(self) -> None:
+    #def _encode_values(self) -> None:
         """
         Codifica los valores categóricos según su codificación esperada
         :return:
         """
         # Columnas OHE
-        self._encode_ohe_columns()
+    #    self._encode_ohe_columns()
 
         # Columnas LabelEncoder
-        self._encode_no_ohe_columns()
+    #    self._encode_no_ohe_columns()
 
     def _get_attributes(self, col: str) -> list:
-        """
-        Obtener la lista de valores que tiene una columna
-        :param col:
-        :return:
-        """
-        if col in self._cols_ohe:  # Columnas One Hot Encoder
-            attrs = self._cat_col_ohe_attributes(col=col)
-
-        else:  # Columnas categoricas
-            attrs = self._cat_col_attributes(col=col)
-
+        attrs = self._cat_col_attributes(col=col)
         return attrs
 
     def _get_scaler(self, scaler_type: int) -> None:
@@ -295,10 +276,6 @@ class CrewModel:
             if scaler_type == 1:
                 scaler = joblib.load(c.SCALER_1)
                 cols = self._cols_scaler_1
-
-            if scaler_type == 2:
-                scaler = joblib.load(c.SCALER_2)
-                cols = self._cols_scaler_2
 
             self._do_scale(cols=cols, scaler=scaler)
 
@@ -340,32 +317,6 @@ class CrewModel:
             # dataframe a predecir
             self._num_input(col)
 
-    def _location_input(self) -> None:
-        """
-        Representar mapa de la zona de vuelo del avión
-        :return:
-        """
-        with st.container():
-            # INFO
-            st.markdown('### ZONA DE VUELO')
-            st.write('Zona indicada por la que el avión realiza su vuelo.')
-
-            # DATOS
-            c1, c2 = st.columns(spec=2)
-
-            with c1:
-                self._input_df.loc[0, 'c20'] = st.number_input(
-                    label=self._col_name('c20'), help=self._help('c20'),
-                    value=39.46975)
-            with c2:
-                self._input_df.loc[0, 'c21'] = st.number_input(
-                    label=self._col_name('c21'), help=self._help('c21'),
-                    value=-0.37739)
-
-            location = {"LAT": self._input_df['c20'],
-                        "LON": self._input_df['c21']}
-
-            st.map(location, zoom=10)
 
     def _num_input(self, col: str) -> None:
         """
