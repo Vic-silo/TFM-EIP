@@ -42,7 +42,7 @@ class CrewModel:
     # Columnas por campo semántico añadir columnas para que queden separadas por tipo y sea mas visual
     _cols_forecast = ["c109","c117"]
     _cols_crew = ['c51','c61','c62','c56','c49','c41']#Genera error con columnas c65 y c47 no están en el diccionario por lo que hay que generarlo de nuevo
-    _cols_flight = ['c7','c106','c108','c126','c128','c144','c141','c130',
+    _cols_flight = ['c7','c106','c108','c126','c128','c144','c141','c130','c10',
                     'c84','c156','c122','c10','c132','c123','c35','c101','c31','c30' ]#Genera error con c151 ya que es categorica pero no aparece en el diccionario mapdic
 
 
@@ -207,6 +207,10 @@ class CrewModel:
                                      help=self._help('c7'))
                 self._input_df.loc[0, 'c7'] = str(int(date.strftime('%m')))
 
+            with c2:
+                time = st.time_input(label='Hora del vuelo',
+                                     help=self._help('c10'))
+                self._input_df.loc[0, 'c10'] = self._get_hour(time=time)
 
     def _do_scale(self, cols: list, scaler) -> None:
         """
@@ -252,7 +256,7 @@ class CrewModel:
             except (ValueError, NameError) as e:
                 print(f'ERROR\t{e}')
 
-    #def _encode_values(self) -> None:
+    def _encode_values(self) -> None:
         """
         Codifica los valores categóricos según su codificación esperada
         :return:
@@ -261,7 +265,7 @@ class CrewModel:
     #    self._encode_ohe_columns()
 
         # Columnas LabelEncoder
-    #    self._encode_no_ohe_columns()
+        self._encode_no_ohe_columns()
 
     def _get_attributes(self, col: str) -> list:
         attrs = self._cat_col_attributes(col=col)
