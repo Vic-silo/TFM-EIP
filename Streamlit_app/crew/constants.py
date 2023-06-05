@@ -15,4 +15,4 @@ SCALER_1 = f'{SOURCE_DIRECTORY}/scaler_c61_c62_c31_c56.joblib'
 
 SCALER_2 = f'{SOURCE_DIRECTORY}/scaler_c61_c62_c31_c56.joblib'#RELLENO BORRAR
 # Modelo de predicción
-MODEL = 'modelo_entrenado.pkl'
+MODEL = 'modelo_entrenado'

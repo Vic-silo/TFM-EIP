@@ -21,13 +21,13 @@ class CrewModel:
     _cols_name_df: pd.DataFrame
     # Columnas esperadas por el modelo
     _cols = ['c61', 'c62', 'c31', 'c56','c7', 'c151', 'c47', 'c65', 'c10',
-             'c1', 'c144', 'c106', 'c108', 'c51', 'c101', 'c109', 'c132',
+             'c144', 'c106', 'c108', 'c51', 'c101', 'c109', 'c132',
              'c141', 'c35', 'c117', 'c122', 'c126', 'c128', 'c130', 'c84', 'c123', 'c156', 'c49', 'c41', 'c30']
     # Tipo datos columnas
     _num_cols = ['c61', 'c62', 'c31', 'c56']
     _cat_cols = ['c7', 'c151', 'c47', 'c65', 'c10','c1', 'c144', 'c106', 'c108', 'c51',
                  'c101', 'c109', 'c132', 'c141', 'c35', 'c117', 'c122', 'c126', 'c128',
-                 'c130', 'c84', 'c123', 'c156', 'c49', 'c41', 'c30','c61', 'c62', 'c31']
+                 'c130', 'c84', 'c123', 'c156', 'c49', 'c41', 'c30']
 
 
     _special_cols = ['c7', 'c10'] # borrar esta linea
@@ -42,8 +42,8 @@ class CrewModel:
     # Columnas por campo semántico añadir columnas para que queden separadas por tipo y sea mas visual
     _cols_forecast = ["c109","c117"]
     _cols_crew = ['c51','c61','c62','c56','c49','c41']#Genera error con columnas c65 y c47 no están en el diccionario por lo que hay que generarlo de nuevo
-    _cols_flight = ['c7','c106','c108','c117','c126','c128','c144','c141','c130',
-                    'c84','c156','c122','c126','c10','c132','c128','c123','c35','c151','c101','c31','c30' ]
+    _cols_flight = ['c7','c106','c108','c126','c128','c144','c141','c130',
+                    'c84','c156','c122','c10','c132','c123','c35','c101','c31','c30' ]#Genera error con c151 ya que es categorica pero no aparece en el diccionario mapdic
 
 
 
@@ -150,9 +150,10 @@ class CrewModel:
         Crear campo categórico de introducción de datos
         :return:
         """
+        key = f"{col}_selectbox"  # Genera una clave única para cada selectbox
         self._input_df.loc[0, col] = st.selectbox(
             label=self._col_name(col), options=self._get_attributes(col),
-            help=self._help(col))
+            help=self._help(col), key=key)
 
     def _col_name(self, col: str) -> str:
         """
@@ -340,7 +341,7 @@ class CrewModel:
         self._scale_values()
 
         # Codificación de valores
-        self._encode_values()
+        #self._encode_values()
 
         # Predicción
         pred = do_prediction(input_data=self._final_df)
