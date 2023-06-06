@@ -30,7 +30,7 @@ class CrewModel:
                  'c130', 'c84', 'c123', 'c156', 'c49', 'c41', 'c30']
 
 
-    _special_cols = ['c7', 'c10','c65'] # borrar esta linea
+    _special_cols = ['c7', 'c10'] # borrar esta linea
     _label_col = 'c1'
 
     # Columnas One Hot Encoder
@@ -50,7 +50,7 @@ class CrewModel:
 
 
     # Columnas a normalizar o escalar
-    _cols_scaler_1 = ['c61', 'c62', 'c31', 'c56']
+    _cols_scaler_1 = ['c61', 'c62', 'c31', 'c56','c65']
     #_cols_scaler_2 = ['c61', 'c62', 'c31', 'c56']
 
 
