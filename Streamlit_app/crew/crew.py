@@ -24,26 +24,28 @@ class CrewModel:
              'c144', 'c106', 'c108', 'c51', 'c101', 'c109', 'c132',
              'c141', 'c35', 'c117', 'c122', 'c126', 'c128', 'c130', 'c84', 'c123', 'c156', 'c49', 'c41', 'c30']
     # Tipo datos columnas
-    _num_cols = ['c61', 'c62', 'c31', 'c56']
-    _cat_cols = ['c7', 'c151', 'c47', 'c65', 'c10','c1', 'c144', 'c106', 'c108', 'c51',
+    _num_cols = ['c61', 'c62', 'c31', 'c56','c65']
+    _cat_cols = ['c7', 'c151', 'c47', 'c10', 'c144', 'c106', 'c108', 'c51',
                  'c101', 'c109', 'c132', 'c141', 'c35', 'c117', 'c122', 'c126', 'c128',
                  'c130', 'c84', 'c123', 'c156', 'c49', 'c41', 'c30']
 
 
-    _special_cols = ['c7', 'c10'] # borrar esta linea
+    _special_cols = ['c7', 'c10','c65'] # borrar esta linea
     _label_col = 'c1'
 
     # Columnas One Hot Encoder
     #_cols_oe = ['c144', 'c106', 'c108', 'c51', 'c101', 'c109', 'c132', 'c141', 'c35', 'c117', 'c122', 'c126', 'c128', 'c130', 'c84', 'c123', 'c156', 'c49', 'c41', 'c30']
-    _cols_lbl_encoder = ['c144', 'c106', 'c108', 'c51', 'c101', 'c109', 'c132', 'c141', 'c35', 'c117', 'c122', 'c126', 'c128', 'c130', 'c84', 'c123', 'c156', 'c49', 'c41', 'c30']
+    _cols_lbl_encoder = ['c7','c10','c144', 'c106', 'c108', 'c51', 'c101',
+                         'c109', 'c132', 'c141', 'c35', 'c117', 'c122', 'c126',
+                         'c128', 'c130', 'c84', 'c123', 'c156', 'c49', 'c41', 'c30','c151','c47']
 
 
 
     # Columnas por campo semántico añadir columnas para que queden separadas por tipo y sea mas visual
     _cols_forecast = ["c109","c117"]
-    _cols_crew = ['c51','c61','c62','c56','c49','c41']#Genera error con columnas c65 y c47 no están en el diccionario por lo que hay que generarlo de nuevo
+    _cols_crew = ['c51','c61','c62','c56','c49','c41','c47','c65']#Genera error con columnas c65 ya que es float y en el input se meten como int
     _cols_flight = ['c7','c106','c108','c126','c128','c144','c141','c130','c10',
-                    'c84','c156','c122','c10','c132','c123','c35','c101','c31','c30' ]#Genera error con c151 ya que es categorica pero no aparece en el diccionario mapdic
+                    'c84','c156','c122','c10','c132','c123','c35','c101','c31','c30','c151']
 
 
 
@@ -85,6 +87,9 @@ class CrewModel:
         Introducir datos para las condicoines de la tripulacion
         :return:
         """
+        # Zona de vuelo
+        self._float_input()
+
         columns = self._cols_crew
         # Columnas para introducir datos numericos y categóricos de un modo más
         # simple
@@ -105,8 +110,7 @@ class CrewModel:
         """
         columns = self._cols_flight
 
-        # Zona de vuelo
-        #self._location_input()
+
 
         # Hora de vuelo
         self._datetime_input()
@@ -173,21 +177,21 @@ class CrewModel:
         :return:
         """
         # Valor introducido por usuario
-        input_value = self._input_df.loc[0, col]
+        #input_value = self._input_df.loc[0, col]
 
         # Obtener valores de la columna
-        attrs = self._cat_col_ohe_attributes(col=col)
+        #attrs = self._cat_col_ohe_attributes(col=col)
 
         # Lista de columnas a añadir
-        ohe_columns = [f'{col}_{attr}' for attr in attrs]
+        #ohe_columns = [f'{col}_{attr}' for attr in attrs]
 
         # Añadir columnas con valor
-        for col in ohe_columns:
-            value = 1.0 if input_value in col else 0.0
-            self._final_df[col] = value
+        #for col in ohe_columns:
+        #    value = 1.0 if input_value in col else 0.0
+        #    self._final_df[col] = value
 
         # Renombrar columnas NaN
-        self._final_df.columns = self._final_df.columns.str.replace('_NAN', '_nan')
+        #self._final_df.columns = self._final_df.columns.str.replace('_NAN', '_nan')
 
     def _datetime_input(self) -> None:
         """
@@ -251,7 +255,10 @@ class CrewModel:
             map_value = map_value.idxmax() if map_value.any() else None
 
             try:
-                self._final_df[col] = int(map_value)
+                if map_value is not None:
+                    self._final_df[col] = int(map_value)
+                else:
+                    self._final_df[col] = 0
 
             except (ValueError, NameError) as e:
                 print(f'ERROR\t{e}')
@@ -278,9 +285,9 @@ class CrewModel:
         :return:
         """
         try:
-            if scaler_type == 1:
-                scaler = joblib.load(c.SCALER_1)
-                cols = self._cols_scaler_1
+
+            scaler = joblib.load(c.SCALER_1)
+            cols = self._cols_scaler_1
 
             self._do_scale(cols=cols, scaler=scaler)
 
@@ -322,6 +329,22 @@ class CrewModel:
             # dataframe a predecir
             self._num_input(col)
 
+    def _float_input(self) -> None:
+        """
+        Número de miembros de la tripulación de vuelo a bordo
+        :return:
+        """
+        with st.container():
+            # INFO
+            st.markdown('### ZONA DE VUELO')
+            st.write('Zona indicada por la que el avión realiza su vuelo.')
+
+            # DATOS
+            c1 = st.columns(spec=1)[0]
+
+            self._input_df.loc[0, 'c65'] = st.number_input(
+                label=self._col_name('c65'), help=self._help('c65'),
+                value=39.46975)
 
     def _num_input(self, col: str) -> None:
         """
@@ -345,7 +368,7 @@ class CrewModel:
         self._scale_values()
 
         # Codificación de valores
-        #self._encode_values()
+        self._encode_values()
 
         # Predicción
         pred = do_prediction(input_data=self._final_df)
