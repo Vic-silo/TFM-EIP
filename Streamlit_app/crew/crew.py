@@ -20,14 +20,14 @@ class CrewModel:
     # Dataframe leyenda de datos
     _cols_name_df: pd.DataFrame
     # Columnas esperadas por el modelo
-    _cols = ['c61', 'c62', 'c31', 'c56','c7', 'c151', 'c47', 'c65', 'c10',
-             'c144', 'c106', 'c108', 'c51', 'c101', 'c109', 'c132',
-             'c141', 'c35', 'c117', 'c122', 'c126', 'c128', 'c130', 'c84', 'c123', 'c156', 'c49', 'c41', 'c30']
+    _cols = ['c62', 'c31', 'c56','c7', 'c151', 'c65', 'c10',
+             'c144', 'c106', 'c108', 'c51', 'c101', 'c109',
+             'c35', 'c117', 'c128', 'c156', 'c49', 'c41', 'c30']
     # Tipo datos columnas
-    _num_cols = ['c61', 'c62', 'c31', 'c56','c65']
-    _cat_cols = ['c7', 'c151', 'c47', 'c10', 'c144', 'c106', 'c108', 'c51',
-                 'c101', 'c109', 'c132', 'c141', 'c35', 'c117', 'c122', 'c126', 'c128',
-                 'c130', 'c84', 'c123', 'c156', 'c49', 'c41', 'c30']
+    _num_cols = [ 'c62', 'c31', 'c56','c65']
+    _cat_cols = ['c7', 'c151', 'c10', 'c144', 'c106', 'c108', 'c51',
+                 'c101', 'c109', 'c35', 'c117',
+                 'c128', 'c156', 'c49', 'c41', 'c30']
 
 
     _special_cols = ['c7', 'c10'] # borrar esta linea
@@ -36,22 +36,19 @@ class CrewModel:
     # Columnas One Hot Encoder
     #_cols_oe = ['c144', 'c106', 'c108', 'c51', 'c101', 'c109', 'c132', 'c141', 'c35', 'c117', 'c122', 'c126', 'c128', 'c130', 'c84', 'c123', 'c156', 'c49', 'c41', 'c30']
     _cols_lbl_encoder = ['c7','c10','c144', 'c106', 'c108', 'c51', 'c101',
-                         'c109', 'c132', 'c141', 'c35', 'c117', 'c122', 'c126',
-                         'c128', 'c130', 'c84', 'c123', 'c156', 'c49', 'c41', 'c30','c151','c47']
+                         'c109', 'c35', 'c117',
+                         'c128','c156', 'c49', 'c41', 'c30','c151']
 
 
 
     # Columnas por campo semántico añadir columnas para que queden separadas por tipo y sea mas visual
     _cols_forecast = ["c109","c117"]
-    _cols_crew = ['c51','c61','c62','c56','c49','c41','c47','c65']#Genera error con columnas c65 ya que es float y en el input se meten como int
-    _cols_flight = ['c7','c106','c108','c126','c128','c144','c141','c130','c10',
-                    'c84','c156','c122','c10','c132','c123','c35','c101','c31','c30','c151']
-
-
+    _cols_crew = ['c51', 'c62', 'c56','c49', 'c41','c65']#Genera error con columnas c65 ya que es float y en el input se meten como int
+    _cols_flight = ['c7','c106','c108','c128', 'c144', 'c10',
+                    'c156', 'c10', 'c35', 'c101', 'c31', 'c30', 'c151']
 
     # Columnas a normalizar o escalar
-    _cols_scaler_1 = ['c61', 'c62', 'c31', 'c56','c65']
-    #_cols_scaler_2 = ['c61', 'c62', 'c31', 'c56']
+    _cols_scaler_1 = [ 'c62', 'c31', 'c56','c65']
 
 
 
@@ -62,6 +59,7 @@ class CrewModel:
         # Crear el dataframe de resultados
         self._input_df = pd.DataFrame(columns=self._cols)
 
+        self._final_df = pd.DataFrame(columns=self._cols)#añadido para pruebas
     # PUBLIC METHODS
 
     def data_forecast(self) -> None:
@@ -111,7 +109,6 @@ class CrewModel:
         columns = self._cols_flight
 
 
-
         # Hora de vuelo
         self._datetime_input()
 
@@ -140,13 +137,12 @@ class CrewModel:
         st.markdown('### Revisión de datos')
         st.write('Revise los datos introducidos')
         st.dataframe(self._input_df)
-
         # Botón de predicción
         predict_do = st.button(label=":blue[PREDICCIÓN]")
 
         if predict_do:
             self._predict()
-
+            st.dataframe(self._final_df)#añadido para pruebas
     # PRIVATE METHODS
 
     def _cat_input(self, col: str) -> None:
@@ -157,7 +153,7 @@ class CrewModel:
         key = f"{col}_selectbox"  # Genera una clave única para cada selectbox
         self._input_df.loc[0, col] = st.selectbox(
             label=self._col_name(col), options=self._get_attributes(col),
-            help=self._help(col), key=key)
+            help=self._help(col))
 
     def _col_name(self, col: str) -> str:
         """
@@ -169,13 +165,13 @@ class CrewModel:
 
         return f'{col}\t{info}'
 
-    def _create_ohe_columns(self, col: str) -> None:
-        """
-        Crea las nuevas columnas teniendo en cuenta el valor seleccionado en el
-        input
-        :param col:
-        :return:
-        """
+    #def _create_ohe_columns(self, col: str) -> None:
+    #    """
+    #    Crea las nuevas columnas teniendo en cuenta el valor seleccionado en el
+    #    input
+    #    :param col:
+    #    :return:
+    #    """
         # Valor introducido por usuario
         #input_value = self._input_df.loc[0, col]
 
@@ -255,10 +251,11 @@ class CrewModel:
             map_value = map_value.idxmax() if map_value.any() else None
 
             try:
-                if map_value is not None:
-                    self._final_df[col] = int(map_value)
-                else:
-                    self._final_df[col] = 0
+            #    if map_value is not None:
+            #        self._final_df[col] = int(map_value)
+            #    else:
+            #        self._final_df[col] = 0
+                self._final_df[col] = int(map_value)
 
             except (ValueError, NameError) as e:
                 print(f'ERROR\t{e}')
@@ -388,10 +385,10 @@ class CrewModel:
         result = 'No existe' if map_value == 'I' else 'Existe'
 
         if result == 'No existe':
-            st.info(f'{result} probabilidad de accidente.')
+            st.info(f'{result} ,probabilidad de accidente.')
 
         else:
-            st.warning(f'{result} probabilidad de accidente.')
+            st.warning(f'{result},{map_value},{prediction} probabilidad de accidente.')
 
     def _scale_values(self) -> None:
         """
@@ -399,7 +396,7 @@ class CrewModel:
         :return:
         """
         # Iterar sobre los tipos de scalers definidos en el entrenamiento
-        list(map(lambda x: self._get_scaler(scaler_type=x), [1, 2]))
+        list(map(lambda x: self._get_scaler(scaler_type=x), [1]))
 
     # STATIC METHODS
 

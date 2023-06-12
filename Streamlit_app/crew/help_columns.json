@@ -32,5 +32,6 @@
   "c41": "Certificate type code of the pilot in command",
   "c31": "Airframe hours of the aircraft",
   "c30": "Airworthiness class code of the aircraft",
-  "c56": "Total number of hours the pilot has flown."
+  "c56": "Total number of hours the pilot has flown.",
+  "c62": "Condicion de vuelo - Secundario bajas"
 }
