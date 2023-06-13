@@ -20,37 +20,30 @@ class CrewModel:
     # Dataframe leyenda de datos
     _cols_name_df: pd.DataFrame
     # Columnas esperadas por el modelo
-    _cols = ['c62', 'c31', 'c56','c7', 'c151', 'c65', 'c10',
+    _cols = ['c62', 'c31', 'c56', 'c7', 'c151', 'c65', 'c10',
              'c144', 'c106', 'c108', 'c51', 'c101', 'c109',
              'c35', 'c117', 'c128', 'c156', 'c49', 'c41', 'c30']
     # Tipo datos columnas
-    _num_cols = [ 'c62', 'c31', 'c56','c65']
+    _num_cols = ['c62', 'c31', 'c56', 'c65']
     _cat_cols = ['c7', 'c151', 'c10', 'c144', 'c106', 'c108', 'c51',
                  'c101', 'c109', 'c35', 'c117',
                  'c128', 'c156', 'c49', 'c41', 'c30']
 
-
-    _special_cols = ['c7', 'c10'] # borrar esta linea
+    _special_cols = ['c7', 'c10']  # borrar esta linea
     _label_col = 'c1'
 
-    # Columnas One Hot Encoder
-    #_cols_oe = ['c144', 'c106', 'c108', 'c51', 'c101', 'c109', 'c132', 'c141', 'c35', 'c117', 'c122', 'c126', 'c128', 'c130', 'c84', 'c123', 'c156', 'c49', 'c41', 'c30']
-    _cols_lbl_encoder = ['c7','c10','c144', 'c106', 'c108', 'c51', 'c101',
+    _cols_lbl_encoder = ['c7', 'c10', 'c144', 'c106', 'c108', 'c51', 'c101',
                          'c109', 'c35', 'c117',
-                         'c128','c156', 'c49', 'c41', 'c30','c151']
-
-
+                         'c128', 'c156', 'c49', 'c41', 'c30', 'c151']
 
     # Columnas por campo semántico añadir columnas para que queden separadas por tipo y sea mas visual
-    _cols_forecast = ["c109","c117"]
-    _cols_crew = ['c51', 'c62', 'c56','c49', 'c41','c65']#Genera error con columnas c65 ya que es float y en el input se meten como int
-    _cols_flight = ['c7','c106','c108','c128', 'c144', 'c10',
+    _cols_forecast = ["c109", "c117"]
+    _cols_crew = ['c51', 'c62', 'c56', 'c49', 'c41', 'c65']
+    _cols_flight = ['c7', 'c106', 'c108', 'c128', 'c144', 'c10',
                     'c156', 'c10', 'c35', 'c101', 'c31', 'c30', 'c151']
 
     # Columnas a normalizar o escalar
-    _cols_scaler_1 = [ 'c62', 'c31', 'c56','c65']
-
-
+    _cols_scaler_1 = ['c62', 'c31', 'c56', 'c65']
 
     def __init__(self):
         # Imprimir el nombre de las columnas del dataset
@@ -59,7 +52,8 @@ class CrewModel:
         # Crear el dataframe de resultados
         self._input_df = pd.DataFrame(columns=self._cols)
 
-        self._final_df = pd.DataFrame(columns=self._cols)#añadido para pruebas
+        #self._final_df = pd.DataFrame(columns=self._cols)  # añadido para pruebas
+
     # PUBLIC METHODS
 
     def data_forecast(self) -> None:
@@ -86,7 +80,7 @@ class CrewModel:
         :return:
         """
         # Zona de vuelo
-        self._float_input()
+        # self._float_input()
 
         columns = self._cols_crew
         # Columnas para introducir datos numericos y categóricos de un modo más
@@ -107,7 +101,6 @@ class CrewModel:
         :return:
         """
         columns = self._cols_flight
-
 
         # Hora de vuelo
         self._datetime_input()
@@ -142,7 +135,8 @@ class CrewModel:
 
         if predict_do:
             self._predict()
-            st.dataframe(self._final_df)#añadido para pruebas
+            #st.dataframe(self._final_df)  # añadido para pruebas
+
     # PRIVATE METHODS
 
     def _cat_input(self, col: str) -> None:
@@ -164,30 +158,6 @@ class CrewModel:
         info = self._cols_name_df.loc[col]["Descripcion"]
 
         return f'{col}\t{info}'
-
-    #def _create_ohe_columns(self, col: str) -> None:
-    #    """
-    #    Crea las nuevas columnas teniendo en cuenta el valor seleccionado en el
-    #    input
-    #    :param col:
-    #    :return:
-    #    """
-        # Valor introducido por usuario
-        #input_value = self._input_df.loc[0, col]
-
-        # Obtener valores de la columna
-        #attrs = self._cat_col_ohe_attributes(col=col)
-
-        # Lista de columnas a añadir
-        #ohe_columns = [f'{col}_{attr}' for attr in attrs]
-
-        # Añadir columnas con valor
-        #for col in ohe_columns:
-        #    value = 1.0 if input_value in col else 0.0
-        #    self._final_df[col] = value
-
-        # Renombrar columnas NaN
-        #self._final_df.columns = self._final_df.columns.str.replace('_NAN', '_nan')
 
     def _datetime_input(self) -> None:
         """
@@ -221,19 +191,6 @@ class CrewModel:
         """
         self._final_df[cols] = scaler.transform(self._input_df[cols])
 
-    #def _encode_ohe_columns(self) -> None:
-        """
-        Codifica los valores para las columnas OHE. Crea las columnas necesarias
-        y elimina la columna padre
-        :return:
-        """
-     #   list(map(lambda col: (
-                 # Eliminar columna
-     #            self._final_df.pop(col),
-                 # Añadir columnas según el valor en el input
-     #            self._create_ohe_columns(col=col)),
-     #            self._cols_oe))
-
     def _encode_no_ohe_columns(self) -> None:
         """
         Codifica los valores para el resto de columnas no OHE.
@@ -251,10 +208,10 @@ class CrewModel:
             map_value = map_value.idxmax() if map_value.any() else None
 
             try:
-            #    if map_value is not None:
-            #        self._final_df[col] = int(map_value)
-            #    else:
-            #        self._final_df[col] = 0
+                #    if map_value is not None:
+                #        self._final_df[col] = int(map_value)
+                #    else:
+                #        self._final_df[col] = 0
                 self._final_df[col] = int(map_value)
 
             except (ValueError, NameError) as e:
@@ -265,8 +222,6 @@ class CrewModel:
         Codifica los valores categóricos según su codificación esperada
         :return:
         """
-        # Columnas OHE
-    #    self._encode_ohe_columns()
 
         # Columnas LabelEncoder
         self._encode_no_ohe_columns()
@@ -388,7 +343,7 @@ class CrewModel:
             st.info(f'{result} ,probabilidad de accidente.')
 
         else:
-            st.warning(f'{result},{map_value},{prediction} probabilidad de accidente.')
+            st.warning(f'{result} probabilidad de accidente.')
 
     def _scale_values(self) -> None:
         """
