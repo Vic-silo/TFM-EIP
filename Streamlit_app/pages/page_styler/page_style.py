@@ -38,17 +38,17 @@ class AirplaneSetup:
 class CrewSetup:
     def __init__(self):
         # Favicon
-        st.set_page_config(page_title="AAP - Forecast", )
+        st.set_page_config(page_title="AAP - Crew", )
 
         # Introducción
-        st.markdown("# MODELO DE PREDICCIÓN FORECAST")
+        st.markdown("# MODELO DE PREDICCIÓN CREW")
         st.markdown("Para la predicción, introduzca a continuación los campos "
                     "requeridos que se le muestran.")
         st.divider()
 
         # Sidebar
-        st.sidebar.header("MODELO DE PREDICCIÓN: FORECAST")
+        st.sidebar.header("MODELO DE PREDICCIÓN: CREW")
         st.sidebar.markdown(
             "En esta sección, se presenta la predicción de accidente para un"
-            "vuelo teniendo en cuenta las condiciones climáticas y las "
-            "caracteristicas del piloto.")
+            "vuelo teniendo en cuenta las caracteristicas de la tripulación, visibilidad del piloto"
+            "características de la aeronave y  datos auxiliares de vuelo.")

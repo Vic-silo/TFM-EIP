@@ -11,6 +11,7 @@ COL_NAME_DICT = 'source/column_info.csv'
 HELP_INFO = 'crew/help_columns.json'
 # Normalizado y escalado
 SCALER_1 = f'{SOURCE_DIRECTORY}/scaler_c62_c31_c56_c65.joblib'
-
 # Modelo de predicción
 MODEL = 'modelo_entrenado'
+# Directorio de resultados
+RESULTS = 'source/results.json'
