@@ -58,7 +58,7 @@ class CrewModel:
 
     def data_forecast(self) -> None:
         """
-        Introducir los datos para las condiciones climáticas
+        Introducir los datos para las condiciones climáticas y pista de aterrizaje
         :return:
         """
         columns = self._cols_forecast
