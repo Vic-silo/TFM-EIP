@@ -132,4 +132,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+ML-Models/Datasets/PHA/PHA_Data.csv
 /ML-Models/catboost_info/
