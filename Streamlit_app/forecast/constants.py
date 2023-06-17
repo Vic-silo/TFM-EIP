@@ -15,3 +15,5 @@ SCALER_1 = f'{SOURCE_DIRECTORY}/scaler_c20_c241.joblib'
 SCALER_2 = f'{SOURCE_DIRECTORY}/scaler_c21_c113_c56.joblib'
 # Modelo de predicción
 MODEL = 'Forecast_model_20230512_1239'
+# Directorio de resultados
+RESULTS = 'source/results.json'

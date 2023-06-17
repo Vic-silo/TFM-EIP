@@ -18,7 +18,6 @@ tab_forecast, tab_crew, tab_flight, tab_res = st.tabs([
     "DATOS CLIMATOLOGICOS", "DATOS TRIPULACIÓN", "DATOS VUELO",
     ":blue[RESULTADOS]"])
 
-
 with tab_forecast:
     forecast_model.data_forecast()
 

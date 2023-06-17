@@ -14,6 +14,7 @@ class ForecastModel:
     """
     Clase para el análisis del modelo de predicción Forecast
     """
+    _model = 'forecast'
     # Dataframe de datos a predecir
     _input_df: pd.DataFrame
     _final_df: pd.DataFrame
@@ -397,6 +398,24 @@ class ForecastModel:
 
         else:
             st.warning(f'{result} probabilidad de accidente.')
+
+        # Guardar datos de la predicción
+        self._save_prediction(prediction=map_value)
+
+    def _save_prediction(self, prediction: str):
+        """
+        Guardar la predicción en un fichero para unir los resultados
+        :param prediction:
+        :return:
+        """
+
+        with open(c.RESULTS) as f:
+            results: dict = json.load(f)
+
+        results.update({self._model: prediction})
+
+        with open(c.RESULTS, 'w') as f:
+            json.dump(results, f)
 
     def _scale_values(self) -> None:
         """

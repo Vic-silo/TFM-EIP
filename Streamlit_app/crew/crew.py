@@ -305,6 +305,21 @@ class CrewModel:
         # Guardar datos de la predicción
         self._save_prediction(prediction=map_value)
 
+    def _save_prediction(self, prediction: str):
+        """
+        Guardar la predicción en un fichero para unir los resultados
+        :param prediction:
+        :return:
+        """
+
+        with open(c.RESULTS) as f:
+            results: dict = json.load(f)
+
+        results.update({self._model: prediction})
+
+        with open(c.RESULTS, 'w') as f:
+            json.dump(results, f)
+
     def _scale_values(self) -> None:
         """
         Realiza el escalado de los valores en la lista 1
@@ -379,21 +394,6 @@ class CrewModel:
             info = json.load(f)
 
         return info.get(col, 'Ayuda no disponible. Disculpe las molestias.')
-
-    def _save_prediction(self, prediction: str):
-        """
-        Guardar la predicción en un fichero para unir los resultados
-        :param prediction:
-        :return:
-        """
-
-        with open(c.RESULTS) as f:
-            results: dict = json.load(f)
-
-        results.update({self._model: prediction})
-
-        with open(c.RESULTS, 'w') as f:
-            json.dump(results, f)
 
 
 @st.cache_data
