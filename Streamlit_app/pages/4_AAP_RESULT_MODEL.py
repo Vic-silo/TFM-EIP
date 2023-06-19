@@ -1,79 +1,144 @@
 """
 Resultado global de modelos de predicción
 """
-import streamlit as st
 from pages.page_styler.page_style import ResultSetup
-import json
-import time
-import matplotlib.pyplot as plt
-import matplotlib.colors as mcolors
 import streamlit as st
+import os
 import json
 import matplotlib.pyplot as plt
 
-# Setup de los datos de la página
-ResultSetup()
+# Ruta a los resultados
+RESULTS = 'Streamlit_app/source/results.json'
+
+if not os.path.exists(RESULTS):
+    RESULTS = 'source/results.json'
 
 
-def obtener_frecuencia(valores):
-    return valores.count("A") if valores else 0
+def _get_accident_prob(results_: dict):
+    """
+    Obtener la probabilidad de accidente
+    :param results:
+    :return:
+    """
+    res = {"msg": '', "plot_color": ''}
+    accident_counter = sum([v for k, v in results_.items()])
 
-def obtener_probabilidad_accidente(frecuencia_crew, frecuencia_forecast, frecuencia_airplane):
-    contador_a = frecuencia_crew + frecuencia_forecast + frecuencia_airplane
-    if contador_a == 1:
-        return "Probabilidad de accidente baja"
-    elif contador_a == 2:
-        return "Probabilidad de accidente media"
-    elif contador_a >= 3:
-        return "Probabilidad de accidente alta"
-    elif contador_a == 0:
-        return "No existe probabilidad de accidente"
+    if accident_counter == 0:
+        res["msg"] = 'No existe probabilidad de accidente'
+        res["plot_color"] = 'green'
 
-def obtener_color(probabilidad_accidente):
-    if probabilidad_accidente == "Probabilidad de accidente baja":
-        return "blue"
-    elif probabilidad_accidente == "Probabilidad de accidente media":
-        return "orange"
-    elif probabilidad_accidente == "Probabilidad de accidente alta":
-        return "#aa1c0d"  # Tono más claro de rojo
-    elif probabilidad_accidente == "No existe probabilidad de accidente":
-        return "green"
+    elif accident_counter == 1:
+        res["msg"] = 'Probabilidad de accidente baja'
+        res["plot_color"] = 'blue'
 
-# Carga el archivo JSON automáticamente
-ruta_json = 'source/results.json'
+    elif accident_counter == 2:
+        res["msg"] = 'Probabilidad de accidente media'
+        res["plot_color"] = 'orange'
 
-# Lee el contenido del archivo JSON
-with open(ruta_json, 'r') as archivo:
-    datos = json.load(archivo)
+    else:
+        res["msg"] = 'Probabilidad de accidente alta'
+        res["plot_color"] = '#aa1c0d'
 
-# Extrae los valores de las claves "crew", "forecast" y "airplane"
-valores_crew = datos.get("crew", "")
-valores_forecast = datos.get("forecast", "")
-valores_airplane = datos.get("airplane", "")
+    return res
 
-# Calcula las frecuencias
-frecuencia_crew = obtener_frecuencia(valores_crew)
-frecuencia_forecast = obtener_frecuencia(valores_forecast)
-frecuencia_airplane = obtener_frecuencia(valores_airplane)
 
-# Determina la probabilidad de accidente
-probabilidad_accidente = obtener_probabilidad_accidente(frecuencia_crew, frecuencia_forecast, frecuencia_airplane)
-color = obtener_color(probabilidad_accidente)
+@st.cache_resource
+def _link_models() -> None:
+    """
+    Crear un link a cada uno de los modelos de la aplicacion
+    :return:
+    """
+    models = {'AIRPLANE': {"result_index": 3}, 'CREW': {"result_index": 4},
+              'FORECAST': {"result_index": 3}}
 
-# Crea el gráfico de barras con el color correspondiente
-fig, ax = plt.subplots()
-categorias = ["crew", "forecast", "airplane"]
-frecuencias = [frecuencia_crew, frecuencia_forecast, frecuencia_airplane]
-colores = [color if f > 0 else "gray" for f in frecuencias]
-ax.bar(categorias, frecuencias, color=colores)
-ax.set_xlabel("Clave")
-ax.set_ylabel("Frecuencia")
-ax.set_title("Frecuencia de valores 'A'")
-plt.xticks(rotation=45)
+    for model in models.keys():
+        idx = models[model]['result_index']
+        st.markdown(f'''<a href="AAP_{model}_MODEL?tab={idx}" target="_self">
+                    Resultados modelo {model}</a>''', unsafe_allow_html=True)
 
-# Muestra el gráfico en Streamlit
-st.pyplot(fig)
 
-# Establece el estilo del mensaje con un fondo de color
-mensaje_html = f"<h2 style='background-color:{color}; padding: 10px; border-radius: 10px; color: white;'>{probabilidad_accidente}</h2>"
-st.markdown(mensaje_html, unsafe_allow_html=True)
+def _map_value(value: str) -> int:
+    """
+    Obtener los resultados para cada uno de los modelos en formato numérico.
+    Donde 1 es Accidente y 0 no accidente
+    :return:
+    """
+    return 1 if value == 'A' else 0
+
+
+def _plot_results(data: dict) -> None:
+    """
+    Representar los datos en formato de gráfico
+    :param data:
+    :return:
+    """
+    accident_data = _get_accident_prob(results_=data)
+    color = _set_plot_color(predefined_color=accident_data["plot_color"])
+    _plot_results_do(data=data, color=color)
+    _text_result(data=accident_data)
+
+
+@st.cache_resource
+def _plot_results_do(data: dict, color: str) -> None:
+    """
+    Genera el grafico de barras con los resultados de las predicciones
+    :param data:
+    :param probability:
+    :return:
+    """
+    values = [value for key, value in data.items()]
+
+    fig, ax = plt.subplots()
+    ax.bar(list(data.keys()), values, color=color)
+
+    ax.set_ylabel("Accidente")
+    ax.set_yticks([0, 1])
+
+    ax.set_title("PREDICCION DE MODELOS", y=1.1)
+
+    st.pyplot(fig)
+
+
+@st.cache_data
+def _result_loads() -> dict:
+    """
+    Obtener los resultados de los diferentes modelos mapeados a valores numéricos
+    :return:
+    """
+    with open(RESULTS, 'r') as f:
+        res = json.load(f)
+
+    # Devolver valores en valor numérico
+    return {key: _map_value(value) for key, value in res.items()}
+
+
+def _set_plot_color(predefined_color: str) -> str:
+    """
+    Selecciona el color del grafico a gusto del usuario
+    :param predefined_color:
+    :return:
+    """
+    return st.color_picker('Pick A Color', predefined_color)
+
+
+def _text_result(data: dict) -> None:
+    """
+    Muestra en texto la probabilidad global de accidente
+    :param data:
+    :return:
+    """
+    msg = data['msg']
+    st.markdown(msg, unsafe_allow_html=True)
+
+
+if __name__ == '__main__':
+    # Setup de los datos de la página
+    ResultSetup()
+
+    with st.container():
+        results = _result_loads()
+        _plot_results(data=results)
+
+    with st.container():
+        st.divider()
+        _link_models()
