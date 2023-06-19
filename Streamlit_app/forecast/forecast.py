@@ -518,7 +518,7 @@ def do_prediction(input_data: pd.DataFrame) -> int:
     :param input_data:
     :return:
     """
-    model = load_model(f'{c.SOURCE_DIRECTORY}/{c.MODEL}')
+    model = load_model(c.MODEL)
     prediction = predict_model(model, data=input_data)
 
     return prediction.loc[0, "prediction_label"]

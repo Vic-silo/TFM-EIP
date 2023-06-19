@@ -14,21 +14,36 @@ CrewSetup()
 crew_model = CrewModel()
 
 # Tabs con las secciones para introducir datos y mostrar resultados
-tab_forecast, tab_crew, tab_flight, tab_aux, tab_res = st.tabs([
-    "DATOS CLIMATOLOGICOS", "DATOS TRIPULACIÓN", "DATOS VUELO",
-    "DATOS AUXLIARES", ":blue[RESULTADOS]"])
+list_of_tabs = ["DATOS CLIMATOLOGICOS", "DATOS TRIPULACIÓN", "DATOS VUELO",
+                "DATOS AUXLIARES", ":blue[RESULTADOS]"]
+tabs = st.tabs(list_of_tabs)
 
-with tab_forecast:
+with tabs[0]:
     crew_model.data_forecast()
 
-with tab_crew:
+with tabs[1]:
     crew_model.data_crew()
 
-with tab_flight:
+with tabs[2]:
     crew_model.data_flight()
 
-with tab_aux:
+with tabs[3]:
     crew_model.data_aux()
 
-with tab_res:
+with tabs[4]:
     crew_model.res_data()
+
+# Handling query parameters
+query = st.experimental_get_query_params()
+
+try:
+    index_tab = query["tab"][0]
+
+    ## Click on that tab
+    js = f"""<script>var tab = window.parent.document.getElementById(
+'tabs-bui3-tab-{index_tab}');tab.click();</script>"""
+
+    st.components.v1.html(js)
+
+except Exception as e:
+    print('[-] ', e)
