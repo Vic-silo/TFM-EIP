@@ -99,7 +99,6 @@ def _plot_results_do(data: dict, color: str) -> None:
     st.pyplot(fig)
 
 
-@st.cache_data
 def _result_loads() -> dict:
     """
     Obtener los resultados de los diferentes modelos mapeados a valores numéricos
