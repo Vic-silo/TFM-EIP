@@ -25,15 +25,15 @@ def _get_accident_prob(results_: dict):
 
     if accident_counter == 0:
         res["msg"] = 'No existe probabilidad de accidente'
-        res["plot_color"] = 'green'
+        res["plot_color"] = '#317f43'
 
     elif accident_counter == 1:
         res["msg"] = 'Probabilidad de accidente baja'
-        res["plot_color"] = 'blue'
+        res["plot_color"] = '#65b3ff'
 
     elif accident_counter == 2:
         res["msg"] = 'Probabilidad de accidente media'
-        res["plot_color"] = 'orange'
+        res["plot_color"] = '#e16f00'
 
     else:
         res["msg"] = 'Probabilidad de accidente alta'
