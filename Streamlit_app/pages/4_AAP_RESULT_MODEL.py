@@ -6,6 +6,7 @@ import streamlit as st
 import os
 import json
 import matplotlib.pyplot as plt
+import matplotlib.font_manager
 
 # Ruta a los resultados
 RESULTS = 'Streamlit_app/source/results.json'
