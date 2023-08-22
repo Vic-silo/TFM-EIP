@@ -13,22 +13,32 @@ AirplaneSetup()
 airplane_model = AirplaneModel()
 
 # Tabs con las secciones para introducir datos y mostrar resultados
-# tab_forecast, tab_crew, tab_flight, tab_aux, tab_res = st.tabs([
-tab_general, tab_motor, tab_vuelo, tab_res = st.tabs([
-    "DATOS GENERALES", "DATOS DEL MOTOR", "DATOS DE VUELO", ":blue[RESULTADOS]"])
-#    "DATOS AUXLIARES", ":blue[RESULTADOS]"])
+list_of_tabs = ["DATOS GENERALES", "DATOS DEL MOTOR", "DATOS DE VUELO", ":blue[RESULTADOS]"]
+tabs = st.tabs(list_of_tabs)
 
-with tab_general:
+with tabs[0]:
     airplane_model.data_general()
 
-with tab_motor:
+with tabs[1]:
     airplane_model.data_motor()
 
-with tab_vuelo:
+with tabs[2]:
     airplane_model.data_vuelo()
 
-#with tab_aux:
-#    airplane_model.data_aux()
-
-with tab_res:
+with tabs[3]:
     airplane_model.res_data()
+
+# Handling query parameters
+query = st.experimental_get_query_params()
+
+try:
+    index_tab = query["tab"][0]
+
+    ## Click on that tab
+    js = f"""<script>var tab = window.parent.document.getElementById(
+'tabs-bui3-tab-{index_tab}');tab.click();</script>"""
+
+    st.components.v1.html(js)
+
+except Exception as e:
+    print('[-] ', e)

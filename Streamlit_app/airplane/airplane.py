@@ -22,7 +22,7 @@ class AirplaneModel:
     # Dataframe leyenda de datos
     _cols_name_df: pd.DataFrame
     # Columnas esperadas por el modelo
-    _cols = ['c145','c147','c149','c151','c153','c155', 'c31', 'c33', 'c39', 'c102','c104']
+    _cols = ['c145','c147','c149','c153','c155', 'c33', 'c39', 'c102','c104']
     # Tipo datos columnas
     _num_cols = ['c31', 'c151']
     _cat_cols = ['c145', 'c147', 'c149', 'c153', 'c155', 'c33', 'c39', 'c102', 'c104']
@@ -30,11 +30,11 @@ class AirplaneModel:
     _label_col = 'c1'
     _cols_lbl_encoder = ['c145', 'c147', 'c149', 'c153', 'c155', 'c33', 'c39', 'c102', 'c104']
     # Columnas por campo semántico añadir columnas para que queden separadas por tipo y sea mas visual
-    _cols_general = ['c31','c33','c145','c147','c149']
-    _cols_motor = ['c151', 'c153', 'c155', 'c39']
+    _cols_general = ['c33','c145','c147','c149']
+    _cols_motor = ['c153', 'c155', 'c39']
     _cols_vuelo = ['c102', 'c104']
     # Columnas a normalizar o escalar.csv
-    _cols_scaler_1 = ['c62', 'c31', 'c56', 'c65']
+    _cols_scaler_1 = ['c62', 'c56', 'c65']
 
     def __init__(self):
         # Imprimir el nombre de las columnas del dataset
