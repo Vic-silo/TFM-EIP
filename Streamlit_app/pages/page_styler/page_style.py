@@ -50,5 +50,25 @@ class CrewSetup:
         st.sidebar.header("MODELO DE PREDICCIÓN: CREW")
         st.sidebar.markdown(
             "En esta sección, se presenta la predicción de accidente para un"
-            "vuelo teniendo en cuenta las caracteristicas de la tripulación, visibilidad del piloto"
-            "características de la aeronave y  datos auxiliares de vuelo.")
+            "vuelo teniendo en cuenta las caracteristicas de la tripulación, "
+            "visibilidad del piloto, características de la aeronave y  "
+            "datos auxiliares de vuelo.")
+
+
+class ResultSetup:
+    def __init__(self):
+        # Favicon
+        st.set_page_config(page_title="AAP - Prediction result", )
+
+        # Introducción
+        st.markdown("# RESULTADO DE PREDICCIÓN GLOBAL")
+        st.markdown("Resultado de los diferentes modelos creados.")
+        st.divider()
+
+        # Sidebar
+        st.sidebar.header("RESULTADOS DE PREDICCIÓN")
+        st.sidebar.markdown("Para el conjunto de predicciones realizadas, se "
+                            "presenta de forma conjunta el resultado de todos "
+                            "los modelos. De este modo, se premite visualizar "
+                            "el riesgo de accidente teniendo en cuenta todas "
+                            "las variables.")

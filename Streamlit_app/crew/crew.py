@@ -305,6 +305,21 @@ class CrewModel:
         # Guardar datos de la predicción
         self._save_prediction(prediction=map_value)
 
+    def _save_prediction(self, prediction: str):
+        """
+        Guardar la predicción en un fichero para unir los resultados
+        :param prediction:
+        :return:
+        """
+
+        with open(c.RESULTS) as f:
+            results: dict = json.load(f)
+
+        results.update({self._model: prediction})
+
+        with open(c.RESULTS, 'w') as f:
+            json.dump(results, f)
+
     def _scale_values(self) -> None:
         """
         Realiza el escalado de los valores en la lista 1
@@ -335,7 +350,8 @@ class CrewModel:
                     self._input_numeric_col(columns=columns)
 
             except streamlit.errors.DuplicateWidgetID:
-                print(f'COLUMN_EXISTS\t{col}')
+                continue
+                # print(f'COLUMN_EXISTS\t{col}')
 
     # STATIC METHODS
     @staticmethod
@@ -380,21 +396,6 @@ class CrewModel:
 
         return info.get(col, 'Ayuda no disponible. Disculpe las molestias.')
 
-    def _save_prediction(self, prediction: str):
-        """
-        Guardar la predicción en un fichero para unir los resultados
-        :param prediction:
-        :return:
-        """
-
-        with open(c.RESULTS) as f:
-            results: dict = json.load(f)
-
-        results.update({self._model: prediction})
-
-        with open(c.RESULTS, 'w') as f:
-            json.dump(results, f)
-
 
 @st.cache_data
 def cols_info(cols: list) -> pd.DataFrame:
@@ -434,7 +435,7 @@ def do_prediction(input_data: pd.DataFrame) -> int:
     :param input_data:
     :return:
     """
-    model = load_model(f'{c.SOURCE_DIRECTORY}/{c.MODEL}')
+    model = load_model(c.MODEL)
     prediction = predict_model(model, data=input_data)
 
     return prediction.loc[0, "prediction_label"]
