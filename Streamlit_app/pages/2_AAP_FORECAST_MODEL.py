@@ -2,6 +2,7 @@
 Modelo de predicción para Forecast
 """
 import streamlit as st
+import time
 from pages.page_styler.page_style import ForecastSetup
 from forecast.forecast import ForecastModel
 
@@ -9,24 +10,37 @@ from forecast.forecast import ForecastModel
 # Setup de los datos de la página
 ForecastSetup()
 
-# MODELO FORECAST
-# Instancia de clase para introducir datos y predecir
+# Introducción de datos
 forecast_model = ForecastModel()
 
 # Tabs con las secciones para introducir datos y mostrar resultados
-tab_forecast, tab_crew, tab_flight, tab_res = st.tabs([
-    "DATOS CLIMATOLOGICOS", "DATOS TRIPULACIÓN", "DATOS VUELO",
-    ":blue[RESULTADOS]"])
+list_of_tabs = ["DATOS CLIMATOLOGICOS", "DATOS TRIPULACIÓN", "DATOS VUELO",
+                ":blue[RESULTADOS]"]
+tabs = st.tabs(list_of_tabs)
 
-
-with tab_forecast:
+with tabs[0]:
     forecast_model.data_forecast()
 
-with tab_crew:
+with tabs[1]:
     forecast_model.data_crew()
 
-with tab_flight:
+with tabs[2]:
     forecast_model.data_flight()
 
-with tab_res:
+with tabs[3]:
     forecast_model.res_data()
+
+# Handling query parameters
+query = st.experimental_get_query_params()
+
+try:
+    index_tab = query["tab"][0]
+
+    ## Click on that tab
+    js = f"""<script>var tab = window.parent.document.getElementById(
+'tabs-bui3-tab-{index_tab}');tab.click();</script>"""
+
+    st.components.v1.html(js)
+
+except Exception as e:
+    print('[-] ', e)
