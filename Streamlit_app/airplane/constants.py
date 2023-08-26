@@ -1,7 +1,6 @@
 """
 Module created to contain the constant values
 """
-
 import os
 
 # Directorio con fuente de datos
