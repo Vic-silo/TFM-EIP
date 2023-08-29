@@ -3,6 +3,8 @@ Module created to contain the constant values
 """
 import os
 
+_model = 'airplane'
+
 # Directorio con fuente de datos
 SOURCE_DIRECTORY = 'Streamlit_app/source'
 
@@ -20,8 +22,6 @@ if not os.path.exists(SOURCE_DIRECTORY):
 
     # Información de las columnas
     HELP_INFO = 'airplane/help_columns.json'
-
-_model = 'airplane'
 
 # Normalizado y escalado
 SCALER_1 = f'{SOURCE_DIRECTORY}/{_model}/scaler_c31_c151.joblib'
