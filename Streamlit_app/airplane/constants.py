@@ -25,9 +25,6 @@ MAPPED_DIC = f'{SOURCE_DIRECTORY}/{_model}/mapped_dictionary.csv'
 # Leyenda de las columnas
 COL_NAME_DICT = f'{SOURCE_DIRECTORY}/column_info.csv'
 
-# Normalizado y escalado
-SCALER_1 = f'{SOURCE_DIRECTORY}/{_model}/scaler_c31_c151.joblib'
-
 # Modelo de predicción
 MODEL = f'{SOURCE_DIRECTORY}/{_model}/Airplane_model'
 
