@@ -285,7 +285,7 @@ class AirplaneModel:
         self._final_df = self._input_df.copy()
 
         # Normalizacion y escalado de valores
-        self._scale_values()
+        #self._scale_values()
 
         # Codificación de valores
         self._encode_values()
@@ -429,7 +429,7 @@ def do_prediction(input_data: pd.DataFrame) -> int:
     :param input_data:
     :return:
     """
-    model = load_model(f'{c.SOURCE_DIRECTORY}/{c.MODEL}')
+    model = load_model(c.MODEL)
     prediction = predict_model(model, data=input_data)
 
     return prediction.loc[0, "prediction_label"]
