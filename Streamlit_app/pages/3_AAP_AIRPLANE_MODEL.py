@@ -1,10 +1,9 @@
 """
 Modelo de predicción para Airplane
 """
-
 import streamlit as st
 from pages.page_styler.page_style import AirplaneSetup
-from airplane.airplane import *
+from airplane.airplane import AirplaneModel
 
 # Setup de los datos de la página
 AirplaneSetup()
@@ -14,32 +13,19 @@ AirplaneSetup()
 airplane_model = AirplaneModel()
 
 # Tabs con las secciones para introducir datos y mostrar resultados
-list_of_tabs = ["DATOS GENERALES", "DATOS DEL MOTOR", "DATOS DE VUELO", ":blue[RESULTADOS]"]
-tabs = st.tabs(list_of_tabs)
+# tab_forecast, tab_crew, tab_flight, tab_aux, tab_res = st.tabs([
+tab_general, tab_motor, tab_vuelo, tab_res = st.tabs([
+    "DATOS GENERALES", "DATOS DEL MOTOR", "DATOS DE VUELO", ":blue[RESULTADOS]"])
+#    "DATOS AUXLIARES", ":blue[RESULTADOS]"])
 
-with tabs[0]:
+with tab_general:
     airplane_model.data_general()
 
-with tabs[1]:
+with tab_motor:
     airplane_model.data_motor()
 
-with tabs[2]:
+with tab_vuelo:
     airplane_model.data_vuelo()
 
-with tabs[3]:
+with tab_res:
     airplane_model.res_data()
-
-# Handling query parameters
-query = st.experimental_get_query_params()
-
-try:
-    index_tab = query["tab"][0]
-
-    ## Click on that tab
-    js = f"""<script>var tab = window.parent.document.getElementById(
-'tabs-bui3-tab-{index_tab}');tab.click();</script>"""
-
-    st.components.v1.html(js)
-
-except Exception as e:
-    print('[-] ', e)

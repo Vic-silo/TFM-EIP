@@ -5,7 +5,8 @@ import os
 
 
 # Directorio con fuente de datos
-SOURCE_DIRECTORY = 'Streamlit_app/source'
+#SOURCE_DIRECTORY = 'Streamlit_app/source'
+SOURCE_DIRECTORY = 'source/airplane'
 
 # Información de las columnas
 HELP_INFO = 'Streamlit_app/airplane/help_columns.json'

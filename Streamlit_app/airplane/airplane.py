@@ -33,9 +33,7 @@ class AirplaneModel:
     _cols_general = ['c33','c145','c147','c149']
     _cols_motor = ['c153', 'c155', 'c39']
     _cols_vuelo = ['c102', 'c104']
-    # Columnas a normalizar o escalar.csv
-    _cols_scaler_1 = ['c62', 'c56', 'c65']
-
+    
     def __init__(self):
         # Imprimir el nombre de las columnas del dataset
         self._cols_name_df = cols_info(cols=self._cols)
@@ -317,22 +315,6 @@ class AirplaneModel:
 
         # Guardar datos de la predicción
         self._save_prediction(prediction=map_value)
-
-    def _scale_values(self) -> None:
-        """
-        Realiza el escalado de los valores en la lista 1
-        :return:
-        """
-        try:
-
-            scaler = joblib.load(c.SCALER_1)
-            cols = self._cols_scaler_1
-
-            self._do_scale(cols=cols, scaler=scaler)
-
-        except Exception as e:
-            print("[-] ERROR\t", e)
-            print('Valores no definidos')
 
     def _separe_columns(self, columns: list) -> None:
         """
