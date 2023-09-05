@@ -98,38 +98,6 @@ class AirplaneModel:
             self._input_categorical_col(columns=columns)
 
 
-    def data_flight(self) -> None:
-        """
-        Introducir datos para las condicoines de la tripulacion
-        :return:
-        """
-        # Hora de vuelo
-        self._datetime_input()
-
-    def data_aux(self) -> None:
-        """
-        Rellenar datos auxiliares del dataframe
-        :return:
-        """
-        left_cols = self._cols_aux[:5]
-        right_cols = self._cols_aux[5:]
-
-        # Columnas para introducir datos numericos y categóricos de un modo más
-        # simple
-        # INFO
-        st.markdown('### AUXILIAR')
-        st.write('Datos auxiliares del vuelo')
-
-        col1, col2 = st.columns(spec=2, gap='medium')
-
-        # Introducción de datos numéricos
-        with col1:
-            self._separe_columns(columns=left_cols)
-
-        # Intorucción de datos categóricos
-        with col2:
-            self._separe_columns(columns=right_cols)
-
     def res_data(self) -> None:
         """
         Realiza la predicción del modelo
@@ -165,38 +133,6 @@ class AirplaneModel:
         info = self._cols_name_df.loc[col]["Descripcion"]
 
         return f'{col}\t{info}'
-
-    def _datetime_input(self) -> None:
-        """
-        Input de fecha y hora de vuelo
-        :return:
-        """
-        with st.container():
-            # INFO
-            st.markdown('### FECHA Y HORA')
-            st.write('Fecha y hora del vuelo.')
-
-            # DATOS
-            c1, c2 = st.columns(spec=2)
-
-            with c1:
-                date = st.date_input(label='Fecha del vuelo',
-                                     help=self._help('c7'))
-                self._input_df.loc[0, 'c7'] = str(int(date.strftime('%m')))
-
-            with c2:
-                time = st.time_input(label='Hora del vuelo',
-                                     help=self._help('c10'))
-                self._input_df.loc[0, 'c10'] = self._get_hour(time=time)
-
-    def _do_scale(self, cols: list, scaler) -> None:
-        """
-        Realiza el escalado de los valores en la lista 1
-        :param cols:
-        :param scaler:
-        :return:
-        """
-        self._final_df[cols] = scaler.transform(self._input_df[cols])
 
     def _encode_no_ohe_columns(self, cols: list) -> None:
         """
@@ -285,7 +221,7 @@ class AirplaneModel:
         self._final_df = self._input_df.copy()
 
         # Normalizacion y escalado de valores
-        self._scale_values()
+        #self._scale_values()
 
         # Codificación de valores
         self._encode_values()
@@ -429,7 +365,7 @@ def do_prediction(input_data: pd.DataFrame) -> int:
     :param input_data:
     :return:
     """
-    model = load_model(f'{c.SOURCE_DIRECTORY}/{c.MODEL}')
+    model = load_model(c.MODEL)
     prediction = predict_model(model, data=input_data)
 
     return prediction.loc[0, "prediction_label"]
