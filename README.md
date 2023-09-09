@@ -1,7 +1,7 @@
 # TFM-EIP
-Trabajo Final Master: Análisis de riesgos (PHA)
+Trabajo Final Master: Aviation Accident Prediction (AAP)
 ### DESCRIPCIÓN
-Estudio del riesgo de accidente existente para los vuelos dadas una serie de
+Estudio de la prediccón de accidente aéreo dadas una serie de
 características previamente estudiadas y analizadas. Estas pueden ser:
 - Riesgos atmosfericos.
 - Riesgos dados al estado del avión.
