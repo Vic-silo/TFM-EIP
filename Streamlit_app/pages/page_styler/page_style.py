@@ -32,7 +32,7 @@ class AirplaneSetup:
         st.sidebar.header("MODELO DE PREDICCIÓN: AIRPLANE")
         st.sidebar.markdown(
             "En esta sección, se presenta la predicción de accidente para un"
-            "vuelo [...].")
+            "vuelo teniendo en cuenta las características de la aeronave.")
 
 
 class CrewSetup:

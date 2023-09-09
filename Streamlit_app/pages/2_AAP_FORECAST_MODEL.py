@@ -2,7 +2,6 @@
 Modelo de predicción para Forecast
 """
 import streamlit as st
-import time
 from pages.page_styler.page_style import ForecastSetup
 from forecast.forecast import ForecastModel
 
