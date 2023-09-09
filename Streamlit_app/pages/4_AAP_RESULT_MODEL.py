@@ -6,6 +6,7 @@ import streamlit as st
 import os
 import json
 import matplotlib.pyplot as plt
+import matplotlib.font_manager
 
 # Ruta a los resultados
 RESULTS = 'Streamlit_app/source/results.json'
@@ -99,7 +100,6 @@ def _plot_results_do(data: dict, color: str) -> None:
     st.pyplot(fig)
 
 
-@st.cache_data
 def _result_loads() -> dict:
     """
     Obtener los resultados de los diferentes modelos mapeados a valores numéricos

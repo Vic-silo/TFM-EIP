@@ -1,0 +1,18 @@
+{
+  "c1": "Tipo de evento - Especifica el tipo de evento o accidente/incidente.",
+  "c144": "Codigo de diseño de la aeronave - Representa el codigo de diseño de la aeronave.",
+  "c145": "Codigo de clase de peso - Especifica el codigo de clase de peso de la aeronave.\\\n1: Menos de 12501 libras\\\n2: Mas de 12500 libras ",
+  "c147": "Codigo del ala de la aeronave.\\\nB: Mas ligero que el aire\\\nD: Ala delta/ala oscilante\\\nG: Ala rotativa\\\nH: Ala monoplano/parasol\\\nK: Cometa/vela\\\nL: Monoplano-ala baja\\\nM: Monoplano-ala media\\\nQ: Ala multiple\\\nS: stol/vtol/tilt/wing",
+  "c149": "Clase de potencia de la aeronave.\\\n0: Non powered\\\n7: Powered\\\n8: Opcional",
+  "c151": "Numero de motores en la aeronave - Indica el numero total de motores en la aeronave.",
+  "c153": "Potencia del motor - Más o menos de 750 hp.",
+  "c155": "Codigo del tipo de motor.\\\nF: Turbofan/turbojet bypass\\\nI: Piston - inline\\\nJ: Turbojet\\\nO: Piston - opposed\\\nR: Piston - radial\\\nT: Turboprop\\\nU: Turboshaft\\\nV: Vee\\\nW: Rotary\\\nX: Other\\\nY: Rocket\\\nZ: pure jet - pulse/ram",
+  "c157": "Código del tipo de tren de aterrizaje.",
+  "c30": "Codigo de clase de aeronavegabilidad de la aeronave - Representa el codigo de clase de aeronavegabilidad de la aeronave.",
+  "c31": "Horas de estructura de la aeronave - Especifica el total de horas de estructura de la aeronave.",
+  "c33": "Tipo de ala",
+  "c38": "Región de certificación del motor.",
+  "c39": "Pistón, turbina, turbohélice, etc.",
+  "c102": "Código del tipo principal de vuelo.",
+  "c104": "Código del tipo secundario de vuelo."
+}
