@@ -9,7 +9,7 @@ import streamlit as st
 st.set_page_config(page_title="AAP - Home",)
 
 # Introducción
-st.markdown("# AAP -Aviation Accident Prediction")
+st.markdown("# AAP - Aviation Accident Prediction")
 st.markdown("""
 Pagina inicial del TFM desarrollado para el estudio de riesgos en un vuelo dada
 sus caracteristicas.
