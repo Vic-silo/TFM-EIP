@@ -1,6 +1,6 @@
 {
     "c114": "Visibilidad - codigo\\\nG10: > 10 millas\\\nLS1: < 1 milla\\\n1: 1 milla\\\n2: 2 milla\\\n3: 3 milla\\\n4: 4 milla\\\n5: 5 milla\\\n6: 6 milla\\\n7: 7 milla\\\n8: 8 milla\\\n9: 9 milla\\\n10: 10 milla",
-    "c112": "Estado del cielo\\\nBRKN: Nuber dispersas\\\nCLER: Despejado\\\nNAN: Desconocido\\\nOBSC: Oscurecido\\\nOCST: Nublado\\\nSCAT: Nuber dispersas",
+    "c112": "Estado del cielo\\\nBRKN: Nubes dispersas\\\nCLER: Despejado\\\nNAN: Desconocido\\\nOBSC: Oscurecido\\\nOCST: Nublado\\\nSCAT: Nubes dispersas",
     "c115": "Visibilidad - restriccion\\\nBLS: Soplando nieve\\\nDRZ: Llovizna\\\nDST: Polvo\\\nFOG: Niebla\\\nHAZ: Bruma\\\nNAN: Desconocido\\\nNONE: Sin restriccion\\\nOTH: Otras\\\nRAI: Lluvia\\\nSMK: Humo\\\nSNO: Nevando",
     "c113": "Techo de las nubes (pies)",
     "c241": "Velocidad viento (mph)",
